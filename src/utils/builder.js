@@ -34,13 +34,13 @@ export default {
    * @param name 注册数据键值名称
    * @returns {function(*=): ({name}|Object)}
    */
-  register: (center, key = 'name') => (data, target) => data && Array.isArray(data) ? data.forEach(v => v[key] && (center[v[key]] = v)) : typeof data === 'object' ? (data.name ? (center[data[key]] = data) : Object.assign(center, data)) : (typeof data === 'string' && target) ? (center[data] = target) : data,
+  register: (center, key = 'name', handle = v => v) => (data, target) => data && Array.isArray(data) ? data.forEach(v => v[key] && (center[v[key]] = handle(v))) : typeof data === 'object' ? (data.name ? (center[data[key]] = data) : Object.entries(data).forEach(([k, v]) => (center[k] = handle(v)))) : (typeof data === 'string' && target) ? (center[data] = handle(target)) : data,
 
   /**
    * 生成集合注册方法
    * @param center 注册中心对象
    * @returns {function(*=): *}
    */
-  collection: (center) => data => data && Array.isArray(data) ? (center = Array.concat(center, data)) : center.push(data)
+  collection: (center, handle = v => v) => data => data && Array.isArray(data) ? data.forEach(v => (v = handle(v)) && center.indexOf(v) < 0 && center.push(v)) : (data = handle(data)) && center.indexOf(data) < 0 && center.push(data)
 
 }

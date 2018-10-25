@@ -199,6 +199,13 @@ const isEmpty = v => v === undefined || v === null || v === ''
 const isNull = v => v === undefined || v === null
 
 /**
+ * 判断对象是否为vue组件
+ * @param v 指定的值
+ * @returns {*|boolean}
+ */
+const isVueComponent = v => v && (typeof v.template === 'string' || typeof v.render === 'function')
+
+/**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
  * @version 1.0 2018-6-15
@@ -218,5 +225,6 @@ export {
   isNull,
   isNotNull,
   isNotEmpty,
-  isNotBlank
+  isNotBlank,
+  isVueComponent
 }
