@@ -13,8 +13,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "cross-env NODE_ENV=prod node build/build-lib.js",
-    "dist": "cross-env NODE_ENV=prod node build/build-all.js"
+    "build": "cross-env NODE_ENV=prod MODE=lib node build/build.js",
+    "dist": "cross-env NODE_ENV=prod MODE=dist node build/build.js"
   },
   "dependencies": {
     "tern": "^0.22.3"

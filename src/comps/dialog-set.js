@@ -4,7 +4,7 @@
 
 import Vue from 'vue'
 import openers from './dialog-openers'
-import page from './page'
+import pages from './pages'
 /**
  * 对话框id计数器
  * @type {number}
@@ -95,14 +95,14 @@ export default {
       if (typeof component === 'string') {
         let path = component
         try {
-          let {props, component} = page.getPageMeta(path)
+          let {props, component} = pages.getPageMeta(path)
           dlg = {params: props, component}
         } catch (e) {
           let text = path
           dlg = {text}
         }
       } else if (typeof dlg.component === 'string') {
-        let {props, component} = page.getPageMeta(dlg.component)
+        let {props, component} = pages.getPageMeta(dlg.component)
         Object.assign(dlg, {params: props, component})
       }
       let len = dls.length

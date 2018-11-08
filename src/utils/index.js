@@ -11,6 +11,7 @@ import * as util from './util'
 import storage from './storage'
 import * as render from './render'
 import builder from './builder'
+import constant from './constant'
 
 /**
  * 工具方法模块
@@ -25,5 +26,6 @@ export default {
   util,
   storage,
   render,
-  builder
+  builder,
+  constant
 }

@@ -73,7 +73,7 @@ export default {
     if (!options) {
       return
     }
-    this.addOpener(options.openers)
-    options.default && this.setDefault(options.default)
+    addOpener(options.openers)
+    options.default && setDefault(options.default)
   }
 }

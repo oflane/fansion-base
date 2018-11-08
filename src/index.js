@@ -20,8 +20,9 @@ const init = (option) => {
   if (!option) {
     return
   }
-  comps.page.init(option.page)
-  comps.dialogOpeners.init(option.dialogs)
+  option.pages && comps.pages.init(option.pages)
+  option.routes && comps.route.addRoute(option.routes)
+  option.dialogs && comps.dialogOpeners.init(option.dialogs)
 }
 
 /**

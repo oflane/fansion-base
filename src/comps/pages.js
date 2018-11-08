@@ -32,29 +32,29 @@ const getPage = (name) => pages[name]
  * @param data{Object|Array|string} 页面注册数据可以时数组，单个页面对象，多个对象map
  * @param target {Object|Array|string} data为string时，target为目标数据
  */
-const addPage = builder.register(pages, 'path')
+const addPage = builder.register(pages)
 
 /**
  * 添加页面页面数据
  * @param data{Object|Array|string} 页面元数据注册数据可以时数组，单个模板对象，多个对象map
  * @param target {Object|Array|string} data为string时，target为目标数据
  */
-const addPageMeta = builder.register(pageMetas, 'path')
+const addPageMeta = builder.register(pageMetas)
 
 /**
  * 根据路径加载页面元数据
- * @param path 页面元数据路径
+ * @param name 页面元数据名称
  * @returns {Object}
  */
-const getPageMeta = (path) => {
-  let meta = pageMetas[path]
+const getPageMeta = (name) => {
+  let meta = pageMetas[name]
   if (meta) {
     return meta
   }
-  let component = getPage(path)
+  let component = getPage(name)
   if (component) {
     meta = {component}
-    addPageMeta(path, meta)
+    addPageMeta(name, meta)
     return meta
   }
   rules.every(r => {
@@ -65,7 +65,11 @@ const getPageMeta = (path) => {
   })
   return meta
 }
-
+/**
+ * 添加页面元数据规则信息
+ * @param data 规则数据
+ */
+const addRule = builder.collection(rules)
 /**
  * 页面加载规则
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -75,7 +79,7 @@ export default {
   /**
    * 页面中心
    */
-  pages,
+  data: pages,
   /**
    * 页面元数据
    */
@@ -104,7 +108,7 @@ export default {
 
   /**
    * 根据路径加载页面元数据
-   * @param path 页面元数据路径
+   * @param name 页面元数据名称
    * @returns {Object}
    */
   getPageMeta,
@@ -113,7 +117,7 @@ export default {
    * 添加页面元数据规则信息
    * @param data 规则数据
    */
-  addRule: builder.collection(rules),
+  addRule,
   /**
    * 初始化数据
    * @param options
@@ -123,8 +127,8 @@ export default {
     if (!options) {
       return
     }
-    this.addPage(options.pages)
-    this.addPageMeta(options.pageMetas)
-    this.addRule(options.rules)
+    addPage(options.pages)
+    addPageMeta(options.pageMetas)
+    addRule(options.rules)
   }
 }

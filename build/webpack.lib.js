@@ -1,18 +1,19 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-var path = require('path');
-var webpack = require('webpack');
-var ProgressBarPlugin = require('progress-bar-webpack-plugin');
-var config = require('./config');
+var path = require('path')
+var webpack = require('webpack')
+var ProgressBarPlugin = require('progress-bar-webpack-plugin')
+var nodeExternals = require('webpack-node-externals')
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 module.exports = {
-  entry: {
-    app: ['./src/index.js']
-  },
+  entry: {app: './src/index.js'},
   output: {
     path: path.resolve(process.cwd(), './lib'),
-    publicPath: '/lib/',
+    publicPath: '/fansion-base/lib/',
     filename: 'fansion-base.js',
     chunkFilename: '[id].js',
     libraryTarget: 'umd',
@@ -22,18 +23,23 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      ...config.alias,
-
+      '~': resolve('src'),
+      '@': resolve('src'),
+      '@static': resolve('static')
     },
     modules: ['node_modules']
   },
-  externals: config.externals,
+  externals: [
+    {
+      vue: 'vue',
+    }, nodeExternals()
+  ],
   module: {
     rules: [
       {
         test: /\.(jsx?|babel|es6)$/,
         include: path.resolve(process.cwd(), './src'),
-        exclude: config.jsexclude,
+        exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {
@@ -54,6 +60,10 @@ module.exports = {
       {
         test: /\.scss$/,
         loaders: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.less$/,
+        loaders: ['style-loader', 'css-loader', 'less-loader']
       },
       {
         test: /\.html$/,
@@ -89,9 +99,6 @@ module.exports = {
     new ProgressBarPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     })
   ]
-};
+}

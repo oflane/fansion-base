@@ -6,7 +6,7 @@ import DataLoader from './data-loader'
 import dialogSet from './dialog-set'
 import dialogOpeners from './dialog-openers'
 import route from './route'
-import page from './page'
+import pages from './pages'
 /**
  * 组件列表
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -16,6 +16,6 @@ export default {
   DataLoader,
   dialogSet,
   dialogOpeners,
-  page,
+  pages,
   route
 }
