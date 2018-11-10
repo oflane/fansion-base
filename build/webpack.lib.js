@@ -10,6 +10,7 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 module.exports = {
+  mode: 'production',
   entry: {app: './src/index.js'},
   output: {
     path: path.resolve(process.cwd(), './lib'),
@@ -17,7 +18,7 @@ module.exports = {
     filename: 'fansion-base.js',
     chunkFilename: '[id].js',
     libraryTarget: 'umd',
-    library: 'fansion-base',
+    library: 'FansionBase',
     umdNamedDefine: true
   },
   resolve: {
@@ -31,7 +32,8 @@ module.exports = {
   },
   externals: [
     {
-      vue: 'vue',
+      vue: 'Vue',
+      'vue-router': 'VueRouter',
     }, nodeExternals()
   ],
   module: {
@@ -41,57 +43,6 @@ module.exports = {
         include: path.resolve(process.cwd(), './src'),
         exclude: /node_modules/,
         loader: 'babel-loader'
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          preserveWhitespace: false
-        }
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
-      {
-        test: /\.css$/,
-        loaders: ['style-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.less$/,
-        loaders: ['style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader?minimize=false'
-      },
-      {
-        test: /\.otf|ttf|woff2?|eot(\?\S*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: path.posix.join('static', '[name].[hash:7].[ext]')
-        }
-      },
-      {
-        test: /\.svg(\?\S*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: path.posix.join('static', '[name].[hash:7].[ext]')
-        }
-      },
-      {
-        test: /\.(gif|png|jpe?g)(\?\S*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: path.posix.join('static', '[name].[hash:7].[ext]')
-        }
       }
     ]
   },
