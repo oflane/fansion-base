@@ -5,7 +5,6 @@ var path = require('path')
 var webpack = require('webpack')
 var ProgressBarPlugin = require('progress-bar-webpack-plugin')
 var nodeExternals = require('webpack-node-externals')
-
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -18,7 +17,7 @@ module.exports = {
     filename: 'fansion-base.js',
     chunkFilename: '[id].js',
     libraryTarget: 'umd',
-    library: 'FansionBase',
+    library: 'fansion-base',
     umdNamedDefine: true
   },
   resolve: {
@@ -32,10 +31,13 @@ module.exports = {
   },
   externals: [
     {
-      vue: 'Vue',
-      'vue-router': 'VueRouter',
+      vue: 'vue',
+      'vue-router': 'vue-router',
     }, nodeExternals()
   ],
+  optimization: {
+    minimize: false
+  },
   module: {
     rules: [
       {
@@ -50,6 +52,9 @@ module.exports = {
     new ProgressBarPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
     })
   ]
 }
