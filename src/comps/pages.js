@@ -7,7 +7,7 @@ import builder from '../utils/builder'
  * 页面注册中心
  * @type {{}}
  */
-let pages = {}
+let pageComps = {}
 
 /**
  * 页面元数据注册中心
@@ -25,14 +25,14 @@ let rules = []
  * @param name
  * @returns {*}
  */
-const getPage = (name) => pages[name]
+const getPageComp = (name) => pageComps[name]
 
 /**
  * 添加页面数据
  * @param data{Object|Array|string} 页面注册数据可以时数组，单个页面对象，多个对象map
  * @param target {Object|Array|string} data为string时，target为目标数据
  */
-const addPage = builder.register(pages)
+const addPageComp = builder.register(pageComps)
 
 /**
  * 添加页面页面数据
@@ -51,7 +51,7 @@ const getPageMeta = (name) => {
   if (meta) {
     return meta
   }
-  let component = getPage(name)
+  let component = getPageComp(name)
   if (component) {
     meta = {component}
     addPageMeta(name, meta)
@@ -79,7 +79,7 @@ export default {
   /**
    * 页面中心
    */
-  data: pages,
+  data: pageComps,
   /**
    * 页面元数据
    */
@@ -90,14 +90,14 @@ export default {
    * @param name
    * @returns {*}
    */
-  getPage,
+  getPageComp,
 
   /**
    * 添加页面数据
    * @param data{Object|Array|string} 页面注册数据可以时数组，单个页面对象，多个对象map
    * @param target {Object|Array|string} data为string时，target为目标数据
    */
-  addPage,
+  addPageComp,
 
   /**
    * 添加页面页面数据
@@ -127,7 +127,7 @@ export default {
     if (!options) {
       return
     }
-    addPage(options.pages)
+    addPageComp(options.pageComps)
     addPageMeta(options.pageMetas)
     addRule(options.rules)
   }

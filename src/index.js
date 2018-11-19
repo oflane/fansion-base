@@ -22,6 +22,7 @@ const init = (option) => {
   }
   option.pages && comps.pages.init(option.pages)
   option.routes && comps.route.addRoute(option.routes)
+  option.routeLoader && comps.route.addLoader(option.routeLoader)
   option.dialogs && comps.dialogOpeners.init(option.dialogs)
 }
 
