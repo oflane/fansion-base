@@ -46,7 +46,7 @@ export default {
     opener: Object
   },
   components: {
-    'custom-dialog': openers || openers.getDefault()
+    'custom-dialog': (r) => r(openers && openers.getDefault())
   },
   created () {
     let $dialogs = this

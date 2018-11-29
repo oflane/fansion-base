@@ -2,6 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 import {getJson} from './rest'
+import {isPromise} from './util'
 
 /**
  * 添加参照注册数据到
@@ -26,7 +27,7 @@ export default {
    * @param key 键值名称
    * @return {function(*=, *=): Promise<* | never>}
    */
-  loader: (center, key = 'name') => (data, cb) => data && (data = (typeof data === 'string' ? getJson(data) : data)) && Promise.isPrototypeOf(data) ? data.then(res => add2Center(center, res, cb, key)) : add2Center(center, data, cb, key),
+  loader: (center, key = 'name') => (data, cb) => data && (data = (typeof data === 'string' ? getJson(data) : data)) && isPromise(data) ? data.then(res => add2Center(center, res, cb, key)) : add2Center(center, data, cb, key),
 
   /**
    * 生成map注册方法
@@ -34,7 +35,7 @@ export default {
    * @param name 注册数据键值名称
    * @returns {function(*=): ({name}|Object)}
    */
-  register: (center, key = 'name', handle = v => v) => (data, target) => data && Array.isArray(data) ? data.forEach(v => v[key] && (center[v[key]] = handle(v))) : typeof data === 'object' ? (data.name ? (center[data[key]] = data) : Object.entries(data).forEach(([k, v]) => (center[k] = handle(v)))) : (typeof data === 'string' && target) ? (center[data] = handle(target)) : data,
+  register: (center, key = 'name', handle = v => v) => (data, target) => data && Array.isArray(data) ? data.forEach(v => v[key] && (center[v[key]] = handle(v))) : typeof data === 'object' ? (data[key] ? (center[data[key]] = data) : Object.entries(data).forEach(([k, v]) => (center[k] = handle(v)))) : (typeof data === 'string' && target) ? (center[data] = handle(target)) : data,
 
   /**
    * 生成集合注册方法

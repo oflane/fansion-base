@@ -81,10 +81,7 @@ export default class DataLoader {
       _self.success && _self.success.call(_self.page, res)
       plugs.forEach(p => p.refreshData && p.refreshData(res))
     }).catch(err => {
-      _self.error ? _self.error(err) : _self.$message({
-        type: 'error',
-        message: err
-      })
+      _self.error && _self.error(err)
     }).finally(() => {
       _self.finalCallBack && _self.finalCallBack.call(_self.page)
     })

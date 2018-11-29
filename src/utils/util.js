@@ -211,7 +211,26 @@ const isEmptyObject = v => !v || Object.keys(v).length === 0
  * @returns {*|boolean}
  */
 const isVueComponent = v => v && (typeof v.template === 'string' || typeof v.render === 'function')
+/**
+ * 判断对象是否为Promise对象
+ * @param v 指定的值
+ * @returns {*|boolean}
+ */
+const isPromise = v => v && typeof v.then === 'function'
 
+/**
+ * 制造一个伪Promise对象
+ * @param o 普通对象
+ * @returns {Promise<any>}
+ */
+const simulatePromise = o => new Promise((resolve) => {
+  resolve(o)
+})
+
+let message = ({type = 'info', message}) => {
+  alert(message)
+}
+const setShowMessage = (msg) => (message = msg)
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -234,5 +253,10 @@ export {
   isNotEmpty,
   isNotBlank,
   isEmptyObject,
-  isVueComponent
+  isVueComponent,
+  isPromise,
+  simulatePromise,
+  message,
+  setShowMessage,
+
 }

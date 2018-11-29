@@ -58,7 +58,7 @@ const getPageMeta = (name) => {
     return meta
   }
   rules.every(r => {
-    meta = r(name, pageMetas)
+    meta = r(name, addPageMeta, pageMetas)
     if (meta) {
       return false
     }

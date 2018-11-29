@@ -4,6 +4,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import {getJson} from '../utils/rest'
+import {isPromise} from '../utils/util'
 import pages from './pages'
 
 /**
@@ -115,7 +116,7 @@ const addLoader = (loader) => {
   let loaders = []
   if (Array.isArray(loader) && loader.length > 0) {
     loader.forEach(v => {
-      if (Promise.isPrototypeOf(v)) {
+      if (isPromise(v)) {
         loaders.push(v)
       } else if (typeof v === 'string') {
         loaders.push(getJson(v))
@@ -123,7 +124,7 @@ const addLoader = (loader) => {
         loaders.push(new Promise((resolve, reject) => resolve(v())))
       }
     })
-  } else if (Promise.isPrototypeOf(loader)) {
+  } else if (isPromise(loader)) {
     loaders.push(loader)
   } else if (typeof loader === 'string') {
     loaders.push(getJson(loader))

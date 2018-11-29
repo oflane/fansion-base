@@ -3,6 +3,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 import path from 'path'
+import {message} from './util'
 /**
  * 后台请求工具
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -30,6 +31,17 @@ if (!Promise.prototype.finally) {
     )
   }
 }
+
+/**
+ * 请求错误时不做提示的标志参数
+ * @type {string}
+ */
+const SILENCE = {'__silence': 1}
+/**
+ * 请求错误时不做提示的标志参数名
+ * @type {string}
+ */
+const SILENCE_KEY = '__silence'
 /**
  * get请求头信息
  * @type {{Accept: string, Content-Type: string}}
@@ -43,6 +55,12 @@ const jsonHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json; charset=UTF-8'
 }
+/**
+ * 设置不提示的参数
+ * @param param 需要处理的参数对象
+ * @returns {string}
+ */
+export const silence = (param) => param ? Object.assign(param, SILENCE) : SILENCE
 /**
  *
  * @param data [Object] json格式的对象
@@ -190,10 +208,32 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
       value: isJson ? JSON.stringify(params) : toParameters(params)
     })
   }
+  // 发生错误时是否不做提示
+  let isSilence = params && params[SILENCE_KEY] === 1
+  params && (params[SILENCE_KEY] = null) && delete params[SILENCE_KEY]
   try {
-    return await fetch(url, requestConfig)
+    return await fetch(url, requestConfig).then((response) => {
+      switch (response.status) {
+        case 200:
+          return response
+        case 400:
+          try {
+            !isSilence && message({type: 'error', message: response.json().message})
+          } catch (e) {
+            console.log(e)
+            !isSilence && message({type: 'error', message: '系统异常'})
+            throw new Error(e)
+          }
+          break
+        default :
+          console.log(response.text())
+          !isSilence && message({type: 'error', message: '系统异常'})
+          throw new Error(response.text())
+      }
+    })
   } catch (error) {
-    throw new Error(error)
+    console.log(error)
+    throw error
   }
 }
 
