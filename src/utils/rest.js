@@ -225,6 +225,16 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
             throw new Error(e)
           }
           break
+        case 406:
+          try {
+            let res = response.json()
+            !isSilence && message({type: 'error', message: res.message, items: res.items})
+          } catch (e) {
+            console.log(e)
+            !isSilence && message({type: 'error', message: '系统异常'})
+            throw new Error(e)
+          }
+          break
         default :
           console.log(response.text())
           !isSilence && message({type: 'error', message: '系统异常'})

@@ -227,10 +227,15 @@ const simulatePromise = o => new Promise((resolve) => {
   resolve(o)
 })
 
-let message = ({type = 'info', message}) => {
-  alert(message)
+/**
+ * 显示信息
+ * @param type 信息类型
+ * @param message
+ */
+let message = ({type = 'info', message, items, html = false, autoClose = true}) => {
+  alert(message + (items && items.length > 0 ? '\n' + item.join('\n') : ''))
 }
-const setShowMessage = (msg) => (message = msg)
+const setMessageComp = (msg) => (message = msg)
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -257,6 +262,7 @@ export {
   isPromise,
   simulatePromise,
   message,
-  setShowMessage,
-
+  setMessageComp,
+  msgBox,
+  setMsgBoxComp
 }
