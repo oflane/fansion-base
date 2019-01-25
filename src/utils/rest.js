@@ -66,7 +66,7 @@ export const silence = (param) => param ? Object.assign(param, SILENCE) : SILENC
  * @param data [Object] json格式的对象
  * @returns {string} 拼接好的formData格式字符串
  */
-export const toParameters = (data, prefix = '') => prefix + Object.entries(data).map(([k, v]) => !v ? undefined : Array.isArray(v) ? v.map(vi => vi ? k + '=' + vi : undefined).join('&') : k + '=' + v).join('&')
+export const toParameters = (data, prefix = '') => prefix + Object.entries(data).map(([k, v]) => !v ? undefined : Array.isArray(v) ? v.map(vi => vi ? k + '=' + vi : undefined).join('&') : k + '=' + encodeURIComponent(v)).join('&')
 
 /**
  * rest url参数提取正则
@@ -218,7 +218,7 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
           return response
         case 400:
           try {
-            !isSilence && message({type: 'error', message: response.json().message})
+            !isSilence && response.json().then(res => message({type: 'error', message: res.message}))
           } catch (e) {
             console.log(e)
             !isSilence && message({type: 'error', message: '系统异常'})
@@ -227,8 +227,7 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
           break
         case 406:
           try {
-            let res = response.json()
-            !isSilence && message({type: 'error', message: res.message, items: res.items})
+            !isSilence && response.json().then(res => message({type: 'error', message: res.message || '系统异常', items: res.items}))
           } catch (e) {
             console.log(e)
             !isSilence && message({type: 'error', message: '系统异常'})
@@ -236,9 +235,16 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
           }
           break
         default :
-          console.log(response.text())
-          !isSilence && message({type: 'error', message: '系统异常'})
-          throw new Error(response.text())
+          try {
+            response.text().then(res => {
+              console.log(res)
+              !isSilence && message({type: 'error', message: '系统异常'})
+              throw new Error(res)
+            })
+          } catch (e) {
+            console.log(e)
+            throw new Error(e)
+          }
       }
     })
   } catch (error) {

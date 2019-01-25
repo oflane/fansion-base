@@ -103,7 +103,8 @@ export default {
         }
       } else if (typeof dlg.component === 'string') {
         let {props, component} = pages.getPageMeta(dlg.component)
-        Object.assign(dlg, {params: props, component})
+        props && (dlg.params = dlg.params ? Object.assign(props, dlg.params) : props)
+        component && (dlg.component = component)
       }
       let len = dls.length
       if (dlg.component) {
@@ -132,10 +133,10 @@ export default {
       dls.push(dlg)
       this._dialogs = dls
     },
-    closeCurrent () {
+    closeCurrent (flag) {
       let c = this.getCurrent()
       if (c) {
-        c.hide()
+        c.hide(flag)
       }
     },
     getCurrent () {
