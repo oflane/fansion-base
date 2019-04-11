@@ -233,7 +233,7 @@ const simulatePromise = o => new Promise((resolve) => {
  * @param message
  */
 let message = ({type = 'info', message, items, html = false, autoClose = true}) => {
-  alert(message + (items && items.length > 0 ? '\n' + item.join('\n') : ''))
+  alert(message + (items && items.length > 0 ? '\n' + items.join('\n') : ''))
 }
 const setMessageComp = (msg) => (message = msg)
 /**
@@ -262,7 +262,5 @@ export {
   isPromise,
   simulatePromise,
   message,
-  setMessageComp,
-  msgBox,
-  setMsgBoxComp
+  setMessageComp
 }
