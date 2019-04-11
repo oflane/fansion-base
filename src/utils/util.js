@@ -137,15 +137,28 @@ const compareObj = (left, right) => {
 仿vue proxy方法，用来处理fac data
 */
 
-function noop () {}
+/**
+ * 空方法
+ */
+const empty = () => undefined
 
+/**
+ * 属性代理对象
+ * @type {{set: (function(): undefined), enumerable: boolean, get: (function(): undefined), configurable: boolean}}
+ */
 let sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
-  get: noop,
-  set: noop
+  get: empty,
+  set: empty
 }
 
+/**
+ * 为对象的属性对象的属性的getset方法创建代理用于生成监听
+ * @param target 指定的对象
+ * @param sourceKey 属性对象
+ * @param key 属性对象的属性
+ */
 const proxy = function (target, sourceKey, key) {
   sharedPropertyDefinition.get = function proxyGetter () {
     return this[sourceKey][key]
@@ -235,6 +248,11 @@ const simulatePromise = o => new Promise((resolve) => {
 let message = ({type = 'info', message, items, html = false, autoClose = true}) => {
   alert(message + (items && items.length > 0 ? '\n' + items.join('\n') : ''))
 }
+/**
+ * 设置消息组件
+ * @param msg
+ * @returns {*}
+ */
 const setMessageComp = (msg) => (message = msg)
 /**
  * 常用工具方法集合
@@ -242,6 +260,7 @@ const setMessageComp = (msg) => (message = msg)
  * @version 1.0 2018-6-15
  */
 export {
+  empty,
   deepClone,
   compareObj,
   proxy,
