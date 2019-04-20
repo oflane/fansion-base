@@ -14,10 +14,5 @@ export default {
   /**
    * 添加业务时使用的临时id
    */
-  ADD_ID: '__add',
-  /**
-   * 空方法
-   * @constructor
-   */
-  EMPTY_FUNC: function () {}
+  ADD_ID: '__add'
 }
