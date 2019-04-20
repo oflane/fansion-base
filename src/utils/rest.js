@@ -3,36 +3,19 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 import path from 'path'
-import {message} from './util'
+import {message, isEmptyObject, error} from './util'
 /**
  * 后台请求工具
  * @author Paul.Yang E-mail:yaboocn@qq.com
  * @version 1.0 2017-7-13
  */
-
-if (!Promise.prototype.finally) {
-  Promise.prototype.finally = function (callback) {
-    var Promise = this.constructor
-    return this.then(
-      function (value) {
-        Promise.resolve(callback()).then(
-          function () {
-            return value
-          }
-        )
-      },
-      function (reason) {
-        Promise.resolve(callback()).then(
-          function () {
-            throw reason
-          }
-        )
-      }
-    )
-  }
-}
+/* 当promise不支持final时为其扩展此方法 */
+!Promise.prototype.finally && (Promise.prototype.finally = callback => {
+  let Promise = this.constructor && this.then(value => Promise.resolve(callback()).then(_ => value), reason => Promise.resolve(callback()).then(_ => error(reason)))
+})
 
 /**
+ * isEmptyObject
  * 请求错误时不做提示的标志参数
  * @type {string}
  */
@@ -43,7 +26,7 @@ const SILENCE = {'__silence': 1}
  */
 const SILENCE_KEY = '__silence'
 /**
- * get请求头信息
+ * 默认的header信息
  * @type {{Accept: string, Content-Type: string}}
  */
 const defaultHeaders = {
@@ -51,6 +34,10 @@ const defaultHeaders = {
   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 }
 
+/**
+ * json请求的头信息
+ * @type {{Accept: string, 'Content-Type': string}}
+ */
 const jsonHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json; charset=UTF-8'
@@ -96,7 +83,7 @@ export const parseRestPath = url => {
  */
 export const fillRestPath = (url, data) => {
   parseRestPath(url).forEach(p => {
-    url = url.replace(':' + p, data[p])
+    url = url.replace(':' + p, encodeURIComponent(data[p]))
   })
   return url
 }
@@ -264,12 +251,7 @@ export const createRequest = (url, params = {}, type = 'GET', header) => {
   if (!url) {
     throw new Error('url is null')
   }
-  if (type.toUpperCase() === 'GET') {
-    const length = Object.keys(params).length
-    if (length) {
-      url = `${url}${toParameters(params, '?')}`
-    }
-  }
+  type.toUpperCase() === 'GET' && (isEmptyObject(params) || (url = `${url}${toParameters(params, url.indexOf('?') > 0 ? '&' : '?')}`))
   let headers
   let isJson = false
   if (type.toUpperCase() === 'JSON') {
@@ -286,10 +268,8 @@ export const createRequest = (url, params = {}, type = 'GET', header) => {
     mode: 'cors',
     cache: 'force-cache'
   }
-  if (type.toUpperCase() === 'POST') {
-    Object.defineProperty(requestConfig, 'body', {
-      value: isJson ? JSON.stringify(params) : toParameters(params)
-    })
-  }
+  type.toUpperCase() === 'POST' && Object.defineProperty(requestConfig, 'body', {
+    value: isJson ? JSON.stringify(params) : toParameters(params)
+  })
   return fetch(url, requestConfig)
 }

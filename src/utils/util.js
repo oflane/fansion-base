@@ -4,16 +4,15 @@
  */
 
 /**
- * 时间转换方法
- * @param data [Object] 需要格式化的数据
- * @param keyAry [Array[String]]
+ * 空方法
  */
-const timeToStamp = (data, keyAry) => {
-  Object.keys(data).forEach(key => {
-    if (keyAry.indexOf(key) !== -1 && data[key]) {
-      data[key] = new Date(data[key]).getTime()
-    }
-  })
+const empty = () => undefined
+/**
+ * 抛错方法方便代码抛出错误
+ * @param error
+ */
+const error = error => {
+  throw error
 }
 /**
  * Ensure a function is called only once.
@@ -32,13 +31,7 @@ const once = (fn) => {
  * @param path 原始路径
  * @returns {string} 提取后路径
  */
-const parsePath = (path) => {
-  let r = /(\/[^:]*)\/:(\w+)/.exec(path)
-  if (r && r.length > 1) {
-    return r[1]
-  }
-  return path
-}
+const parsePath = (path, r) => (r = /(\/[^:]*)\/:(\w+)/.exec(path)) && r.length > 1 ? r[1] : path
 
 /**
  * 将一个字符串重复多次
@@ -61,8 +54,7 @@ const repeat = (str, n) => {
  * @param obj 需要过滤的对象
  * @param predicate 过滤方法
  */
-const filter = (obj, predicate) => Object.keys(obj)
-  .filter(key => predicate(obj, key)).reduce((res, k) => ((res[k] = obj[k])) !== res && res, {})
+const filter = (obj, predicate) => Object.keys(obj).filter(key => predicate(obj, key)).reduce((res, k) => ((res[k] = obj[k])) !== res && res, {})
 
 /**
  * 过滤指定的属性创建新的对象
@@ -76,71 +68,18 @@ const filterProps = (obj, props) => filter(obj, (obj, key) => props.indexOf(key)
  * @param obj 原始对象
  * @returns {{}}
  */
-const deepClone = (obj) => {
-  let result
-  if (Array.isArray(obj)) {
-    result = []
-    obj.forEach(v => {
-      result.push(deepClone(v))
-    })
-    return result
-  }
-  let type = typeof obj
-  if (type === 'object') {
-    result = {}
-    Object.entries(obj).forEach(([k, v]) => {
-      result[k] = deepClone(v)
-    })
-    return result
-  }
-  return obj
-}
+const deepClone = (obj) => Array.isArray(obj) ? obj.reduce((result, v) => (result.push(deepClone(v)) || true) && result, []) : obj && typeof obj === 'object' ? Object.entries(obj).reduce((result, [k, v]) => ((result[k] = deepClone(v)) || true) && result, {}) : obj
+
 /**
  * 深度对比两个对象
  * @param left 对象１
  * @param right 对象2
  * @returns {boolean} 是否相等
  */
-const compareObj = (left, right) => {
-  if (Object.is(left, right) || left === right) {
-    return true
-  }
-  if (isEmpty(left)) {
-    return isEmpty(right)
-  }
-  if (Array.isArray(left) && Array.isArray(right)) {
-    if (left.length !== right.length) {
-      return false
-    }
-    let r = true
-    left.forEach((v, i) => {
-      if (!compareObj(v, right[i])) {
-        r = false
-        return false
-      }
-    })
-    return r
-  }
-  if (typeof left === 'object' && typeof right === 'object') {
-    let r = true
-    Object.entries(left).forEach(([k, v]) => {
-      if (!compareObj(v, right[k])) {
-        r = false
-        return false
-      }
-    })
-    return r
-  }
-  return false
-}
+const compareObj = (left, right) => (Object.is(left, right) || left === right) ? true : isEmpty(left) ? isEmpty(right) : (isNotEmpty(right) && (Array.isArray(left) && Array.isArray(right) ? left.length === right.length && left.every((v, i) => compareObj(v, right[i])) : typeof left === 'object' && typeof right === 'object' ? Object.entries(left).every(([k, v]) => compareObj(v, right[k])) : false))
 /*
 仿vue proxy方法，用来处理fac data
 */
-
-/**
- * 空方法
- */
-const empty = () => undefined
 
 /**
  * 属性代理对象
@@ -217,7 +156,12 @@ const isNull = v => v === undefined || v === null
  * @returns {*|boolean}
  */
 const isEmptyObject = v => !v || Object.keys(v).length === 0
-
+/**
+ * 判断对象是否不为空
+ * @param v 指定的值
+ * @returns {*|boolean}
+ */
+const isNotEmptyObject = v => typeof v === 'object' && Object.keys(v).length > 0
 /**
  * 判断对象是否为vue组件
  * @param v 指定的值
@@ -236,10 +180,19 @@ const isPromise = v => v && typeof v.then === 'function'
  * @param o 普通对象
  * @returns {Promise<any>}
  */
-const simulatePromise = o => new Promise((resolve) => {
-  resolve(o)
-})
+const simulatePromise = o => new Promise(resolve => o && resolve(o))
 
+/**
+ * 空Promise对象
+ * @type {Promise<any>}
+ */
+const emptyPromise = new Promise(empty)
+/**
+ * 确保代码参数结果为真
+ * @returns {boolean}
+ * @param _
+ */
+const sure = _ => true
 /**
  * 显示信息
  * @param type 信息类型
@@ -261,6 +214,7 @@ const setMessageComp = (msg) => (message = msg)
  */
 export {
   empty,
+  error,
   deepClone,
   compareObj,
   proxy,
@@ -269,7 +223,6 @@ export {
   repeat,
   parsePath,
   once,
-  timeToStamp,
   isBlank,
   isEmpty,
   isNull,
@@ -277,9 +230,12 @@ export {
   isNotEmpty,
   isNotBlank,
   isEmptyObject,
+  isNotEmptyObject,
   isVueComponent,
   isPromise,
   simulatePromise,
+  emptyPromise,
   message,
-  setMessageComp
+  setMessageComp,
+  sure
 }

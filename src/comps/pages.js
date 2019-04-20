@@ -2,6 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 import builder from '../utils/builder'
+import {sure} from '../utils/util'
 
 /**
  * 页面注册中心
@@ -52,18 +53,7 @@ const getPageMeta = (name) => {
     return meta
   }
   let component = getPageComp(name)
-  if (component) {
-    meta = {component}
-    addPageMeta(name, meta)
-    return meta
-  }
-  rules.every(r => {
-    meta = r(name, addPageMeta, pageMetas)
-    if (meta) {
-      return false
-    }
-  })
-  return meta
+  return component ? sure(meta = {component}) && sure(addPageMeta(name, meta)) && meta : rules.firstNotNull(r => r(name, addPageMeta, pageMetas))
 }
 /**
  * 添加页面元数据规则信息

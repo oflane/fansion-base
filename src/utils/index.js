@@ -3,6 +3,7 @@
  */
 import './string'
 import './date'
+import './array'
 import * as mod from './mod'
 import script from './script'
 import state from './state'

@@ -4,7 +4,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import {getJson} from '../utils/rest'
-import {isPromise} from '../utils/util'
+import {isPromise, sure, emptyPromise} from '../utils/util'
 import pages from './pages'
 
 /**
@@ -37,7 +37,7 @@ let pageLoader = pages.getPageMeta
  * @param v 页面加载方法
  * @returns {*}
  */
-const setPageLoader = v => (pageLoader = v)
+const setPageLoader = v => v && (pageLoader = v)
 /**
  * 默认的路由解析起
  * @type {Function[]}
@@ -46,36 +46,20 @@ let parserRules = [
   (path) => {
     let i = path.indexOf('->')
     let target = path
-    let eq = true
-    if (i > 0) {
-      target = path.substring(i + 2)
-      path = path.substring(0, i)
-      eq = false
-    }
-    let isDirect
-    let isKeep
-    while ((!isDirect && (isDirect = target.startsWith('!'))) || (!isKeep && (isKeep = target.startsWith('^')))) {
+    let same = true
+    i > 0 && sure(target = path.substring(i + 2)) && sure(path = path.substring(0, i)) && (same = false)
+    let isDirect, keepAlive
+    while ((!isDirect && (isDirect = target.startsWith('!'))) || (!keepAlive && (keepAlive = target.startsWith('^')))) {
       target = target.substring(1)
     }
-    if (eq) {
-      path = target
+    if (same && isDirect) {
+      throw new Error('Redirect path can not equal to target,please redirect path!!')
     }
-    if (isDirect) {
-      if (eq) {
-        throw new Error('Redirect path can nott equal to target,please redirect path!!')
-      }
-      return {
-        path,
-        redirect: target
-      }
-    }
-    console.log('==>' + isKeep)
-    return Object.assign({
+    same && (path = target)
+    return isDirect ? {
       path,
-      meta: {
-        keepAlive: isKeep
-      }
-    }, pageLoader(target))
+      redirect: target
+    } : Object.assign({path, meta: {keepAlive}}, pageLoader(target))
   }
 ]
 /**
@@ -83,61 +67,41 @@ let parserRules = [
  * @param ps 解析规则方法或数组
  * @returns {*}
  */
-const addParserRules = ps => ps && Array.isArray(ps) ? (parserRules = [...ps, ...parserRules]) : parserRules.splice(0, 0, ps)
+const addParserRules = ps => ps && (Array.isArray(ps) ? (parserRules = [...ps, ...parserRules]) : parserRules.splice(0, 0, ps))
 
 /**
  * 根据路由数据进行解析
  * @param route 路由数据
  * @returns {*}
  */
-const parseRoute = (route) => {
-  for (let i = 0; i < parserRules.length; i++) {
-    let rs = parserRules[i](route)
-    if (rs) {
-      return rs
-    }
-  }
-}
+const parseRoute = (route) => parserRules.firstNotNull(r => r(route))
 
 /**
  * 添加路由数据
  * @param routes
  */
-const addRoute = (routes) => {
-  getRouter().addRoutes(routes.map(v => {
-    return parseRoute(v)
-  }))
-}
+const addRoute = (routes) => Array.isArray(routes) && getRouter().addRoutes(routes.map(v => parseRoute(v)))
+
+/**
+ * 转换routeLoader为promise对象
+ * @param v 原对象
+ * @returns {Promise<any>}
+ */
+const convertLoader = v => typeof v === 'function' ? new Promise((resolve) => resolve(v())) : typeof v === 'string' ? getJson(v) : isPromise(v) ? v : emptyPromise
 /**
  * 添加路由加载器，进行路由加载
  * @param loader 加载起
  */
-const addLoader = (loader) => {
-  let loaders = []
-  if (Array.isArray(loader) && loader.length > 0) {
-    loader.forEach(v => {
-      if (isPromise(v)) {
-        loaders.push(v)
-      } else if (typeof v === 'string') {
-        loaders.push(getJson(v))
-      } else if (typeof v === 'function') {
-        loaders.push(new Promise((resolve, reject) => resolve(v())))
-      }
-    })
-  } else if (isPromise(loader)) {
-    loaders.push(loader)
-  } else if (typeof loader === 'string') {
-    loaders.push(getJson(loader))
-  } else if (typeof loader === 'function') {
-    loaders.push(new Promise((resolve) => resolve(loader())))
-  }
-  if (loaders.length === 1) {
-    loaders[0].then(addRoute)
-  } else if (loaders.length > 1) {
-    Promise.all(loaders).then(r => addRoute(Array.concat(...r)))
-  }
-}
+const addLoader = loader => loader && (Array.isArray(loader) && loader.length > 0 ? Promise.all(loader.map(v => convertLoader(v)).filter(v => v)).then(r => addRoute(Array.concat(...r))) : convertLoader(loader).then(addRoute))
 
+/**
+ * 初始化路由
+ * @param routes 路由规则
+ * @param routeLoader 路由加载器
+ * @param rules 路由解析规则
+ * @param pageLoader 页面记载器
+ */
+const init = ({routes, routeLoader, rules, pageLoader}) => sure(addRoute(routes)) && sure(addLoader(routeLoader)) && sure(addParserRules(rules)) && setPageLoader(pageLoader)
 /**
  * 路由扩展工具类
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -169,5 +133,9 @@ export default {
    * 添加路由加载器，进行路由加载
    * @param loader 加载器
    */
-  addLoader
+  addLoader,
+  /**
+   * 初始化路由
+   */
+  init
 }

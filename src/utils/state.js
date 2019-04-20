@@ -12,12 +12,13 @@ import { deepClone, compareObj } from './util'
 const stateChange = (vm, dataName, newVal, oldVal) => {
   let stateName = '__' + dataName + '_state'
   let originDataName = '__' + dataName + '_data'
-  let state = vm[stateName]
-  if (!state || state === 0) {
-    vm[stateName] = 1
-    vm[originDataName] = deepClone(newVal)
-  } else if (state === 1) {
-    vm[stateName] = 2
+  switch (vm[stateName] || 0) {
+    case 0:
+      vm[stateName] = 1
+      vm[originDataName] = deepClone(newVal)
+      return
+    case 1:
+      vm[stateName] = 2
   }
 }
 

@@ -22,17 +22,8 @@ export default {
       let {props, text, html, component, params, dialog, container, title} = d
       let tagName = 'custom-dialog'
       if (container) {
-        if (typeof container === 'string') {
-          let name = tagName = container.replace('/', '_')
-          if (!options.components[name]) {
-            options.components[name] = openers.getOpener(container)
-          }
-        } else {
-          let name = tagName = container.name || container.toString()
-          if (!options.components[name]) {
-            options.components[name] = container
-          }
-        }
+        tagName = typeof container === 'string' ? container.replace('/', '_') : (container.name || container.toString())
+        !options.components[name] && (options.components[name] = openers.getOpener(container))
       }
       return createElement(tagName, {props: {dialogProps: props, component, text, html, params, dialog, title}})
     }
@@ -112,17 +103,18 @@ export default {
           if (!dls[i].component) {
             continue
           }
-          if (dls[i].component._dlgid === dlg.component._dlgid) {
-            if (dlg.refresh) {
-              cel[i].remove()
-              $cvm.splice(i)
-              dls.splice(i)
-              cvn.splice(i)
-            } else {
-              this.$children[i].show()
-              this.triggerOpen(dls[i])
-              return
-            }
+          if (dls[i].component._dlgid !== dlg.component._dlgid) {
+            continue
+          }
+          if (dlg.refresh) {
+            cel[i].remove()
+            $cvm.splice(i)
+            dls.splice(i)
+            cvn.splice(i)
+          } else {
+            this.$children[i].show()
+            this.triggerOpen(dls[i])
+            return
           }
         }
       }
