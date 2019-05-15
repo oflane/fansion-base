@@ -4,6 +4,7 @@
 
 import Vue from 'vue'
 import {repeat} from './util'
+
 /**
  * 模板串转换成vuecomponent的render方法
  * @param vm vue对象
@@ -30,6 +31,20 @@ export const toRender = (vm, template, components) => {
   options.staticRenderFns = ref.staticRenderFns
 }
 
+/**
+ * 空模板
+ * @type {{render(createElement: CreateElement): VNode; staticRenderFns: (() => VNode)[]}}
+ */
+const emptyRender = Vue.compile('<div></div>')
+/**
+ * 重试显示方法
+ * @param vm
+ */
+export const resetRender = (vm) => {
+  let options = vm.$options
+  options.render = emptyRender.render
+  options.staticRenderFns = emptyRender.staticRenderFns
+}
 /**
  * 将配置项转换为属性配置串，如{a:1,b:2}转换为a="1" b="2"
  * @param options {object} 配置项
