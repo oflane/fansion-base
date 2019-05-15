@@ -69,3 +69,21 @@ String.prototype.rtrim = function () {
 String.prototype.trim = function () {
   return this.replace(/^\s+|\s+$/g, '')
 }
+
+/**
+ * 保证字符串一定带有某个前缀
+ * @returns {string}
+ * @param prefix 前缀串
+ */
+String.prototype.prefix = function (prefix) {
+  return this.startsWith(prefix) ? this : prefix + this
+}
+
+/**
+ * 保证字符串一定带有某个后缀
+ * @returns {string}
+ * @param suffix
+ */
+String.prototype.suffix = function (suffix) {
+  return this.endsWith(suffix) ? this : this + suffix
+}

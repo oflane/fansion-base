@@ -56,10 +56,11 @@ let parserRules = [
       throw new Error('Redirect path can not equal to target,please redirect path!!')
     }
     same && (path = target)
+    path = path.prefix('/')
     return isDirect ? {
       path,
       redirect: target
-    } : Object.assign({path, meta: {keepAlive}}, pageLoader(target))
+    } : same ? Object.assign({path, meta: {keepAlive}}, pageLoader(target)) : Object.assign({meta: {keepAlive}}, pageLoader(target), {path})
   }
 ]
 /**
