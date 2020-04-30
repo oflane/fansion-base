@@ -3,7 +3,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 import path from 'path'
-import {message, isEmptyObject, error} from './util'
+import {message, isEmptyObject, error, empty} from './util'
 /**
  * 后台请求工具
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -11,7 +11,7 @@ import {message, isEmptyObject, error} from './util'
  */
 /* 当promise不支持final时为其扩展此方法 */
 !Promise.prototype.finally && (Promise.prototype.finally = callback => {
-  let Promise = this.constructor && this.then(value => Promise.resolve(callback()).then(_ => value), reason => Promise.resolve(callback()).then(_ => error(reason)))
+  const Promise = this.constructor && this.then(value => Promise.resolve(callback()).then(_ => value), reason => Promise.resolve(callback()).then(_ => error(reason)))
 })
 
 /**
@@ -19,7 +19,7 @@ import {message, isEmptyObject, error} from './util'
  * 请求错误时不做提示的标志参数
  * @type {string}
  */
-const SILENCE = {'__silence': 1}
+const SILENCE = {__silence: 1}
 /**
  * 请求错误时不做提示的标志参数名
  * @type {string}
@@ -30,7 +30,7 @@ const SILENCE_KEY = '__silence'
  * @type {{Accept: string, Content-Type: string}}
  */
 const defaultHeaders = {
-  'Accept': 'application/x-www-form-urlencoded',
+  Accept: 'application/x-www-form-urlencoded',
   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 }
 
@@ -39,7 +39,7 @@ const defaultHeaders = {
  * @type {{Accept: string, 'Content-Type': string}}
  */
 const jsonHeaders = {
-  'Accept': 'application/json',
+  Accept: 'application/json',
   'Content-Type': 'application/json; charset=UTF-8'
 }
 /**
@@ -67,7 +67,7 @@ const REG_URLPATTERN = /\/:(\w+)/g
  * @returns {Array}
  */
 export const parseRestPath = url => {
-  let rs = []
+  const rs = []
   let result
   while ((result = REG_URLPATTERN.exec(url)) != null) {
     if (result[1]) {
@@ -76,17 +76,20 @@ export const parseRestPath = url => {
   }
   return rs
 }
+
 /**
- * 提取url中的参数名
- * @param url 需要提取的url
- * @returns {Array}
+ * 提取url中的参数名,进行填充
+ * @param url {String} 需要提取的url
+ * @param data {Array} 填充数据
+ * @returns 填充后url串
  */
-export const fillRestPath = (url, data) => {
+export const fillUrl = (url, data) => {
   parseRestPath(url).forEach(p => {
     url = url.replace(':' + p, encodeURIComponent(data[p]))
   })
   return url
 }
+
 /**
  * 增加rest请求的上下问路径
  * @param url {string} 请求地址
@@ -100,7 +103,14 @@ export const getRestUrl = (url) => path.join(window.$restContext, url)
  * @returns {Promise.<*>} 异步加载对象
  */
 export const getJson = (url, params = {}) => sendRequestJson(getRestUrl(url), params, 'GET')
-
+/**
+ * rest 调用get请求
+ * @param url {string} url串不带contextPath
+ * @param params {object} 参数
+ * @returns {Promise<any>} 异步加载对象
+ * @param cb 回调方法
+ */
+export const gson = (url, params = {}, cb = empty) => getJson(url, params).then(cb)
 /**
  * rest 调用get请求
  * @param url {string} url串不带contextPath
@@ -108,23 +118,38 @@ export const getJson = (url, params = {}) => sendRequestJson(getRestUrl(url), pa
  * @returns {Promise.<*>} 异步加载对象
  */
 export const getText = (url, params = {}) => sendRequestText(getRestUrl(url), params, 'GET')
-
+/**
+ * rest 调用get请求
+ * @param url {string} url串不带contextPath
+ * @param params {object} 参数
+ * @returns {Promise<any>} 异步加载对象
+ * @param cb 回调方法
+ */
+export const gext = (url, params = {}, cb = empty) => getText(url, params).then(cb)
 /**
  * POST方法提交数据
  * @param url 请求的url
  * @param params 提交的参数
- * @return {Object} 返回json
+ * @return {Promise<any>} 返回json
+ * @param cb 回调方法
  */
-export const post = (url, params = {}) => sendRequestJson(getRestUrl(url), params, 'POST')
+export const post = (url, params = {}, cb = empty) => sendRequestJson(getRestUrl(url), params, 'POST')
 
 /**
- * POST方法提交数据
+ * POST方法提交数据，返回文本
  * @param url 请求的url
  * @param params 提交的参数
  * @return {Object} 返回文本
  */
 export const post2Text = (url, params = {}) => sendRequestText(getRestUrl(url), params, 'POST')
-
+/**
+ * POST方法提交数据,返回文本
+ * @param url 请求的url
+ * @param params 提交的参数
+ * @return {Promise<any>} 返回文本
+ * @param cb 回调方法
+ */
+export const p2ext = (url, params = {}, cb = empty) => post2Text(url, params).then(cb)
 /**
  * POST方法提交数据
  * @param url 请求的url
@@ -137,9 +162,27 @@ export const postJson = (url, params = {}) => sendRequestJson(getRestUrl(url), p
  * POST方法提交数据
  * @param url 请求的url
  * @param params 提交的参数
+ * @return {Promise<any>} 返回json
+ * @param cb 回调方法
+ */
+export const pson = (url, params = {}, cb = empty) => post2Text(url, params).then(cb)
+
+/**
+ * POST方法提交数据
+ * @param url 请求的url
+ * @param params 提交的参数
  * @return {Object} 返回文本
  */
 export const postJson2Text = (url, params = {}) => sendRequestText(getRestUrl(url), params, 'JSON')
+
+/**
+ * POST方法提交数据
+ * @param url 请求的url
+ * @param params 提交的参数
+ * @return {Promise<any>} 返回文本
+ * @param cb 回调方法
+ */
+export const pson2ext = (url, params = {}, cb = empty) => postJson2Text(url, params).then(cb)
 /**
  *
  * @param url [String] 请求地址
@@ -183,7 +226,7 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
   } else {
     headers = header ? Object.assign({}, defaultHeaders, header) : defaultHeaders
   }
-  let requestConfig = {
+  const requestConfig = {
     credentials: 'include',
     method: type,
     headers,
@@ -196,7 +239,7 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
     })
   }
   // 发生错误时是否不做提示
-  let isSilence = params && params[SILENCE_KEY] === 1
+  const isSilence = params && params[SILENCE_KEY] === 1
   params && (params[SILENCE_KEY] = null) && delete params[SILENCE_KEY]
   try {
     return await fetch(url, requestConfig).then((response) => {
@@ -261,7 +304,7 @@ export const createRequest = (url, params = {}, type = 'GET', header) => {
   } else {
     headers = header ? Object.assign({}, defaultHeaders, header) : defaultHeaders
   }
-  let requestConfig = {
+  const requestConfig = {
     credentials: 'include',
     method: type,
     headers,
