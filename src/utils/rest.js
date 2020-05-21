@@ -83,7 +83,7 @@ export const parseRestPath = url => {
  * @param data {Array} 填充数据
  * @returns 填充后url串
  */
-export const fillUrl = (url, data) => {
+export const furl = (url, data) => {
   parseRestPath(url).forEach(p => {
     url = url.replace(':' + p, encodeURIComponent(data[p]))
   })
@@ -110,7 +110,7 @@ export const getJson = (url, params = {}) => sendRequestJson(getRestUrl(url), pa
  * @returns {Promise<any>} 异步加载对象
  * @param cb 回调方法
  */
-export const gson = (url, params = {}, cb = empty) => getJson(url, params).then(cb)
+export const gson = (url, params = {}, cb) => cb ? getJson(url, params).then(cb) : getJson(url, params)
 /**
  * rest 调用get请求
  * @param url {string} url串不带contextPath
@@ -212,7 +212,7 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
     throw new Error('url is null')
   }
   if (type.toUpperCase() === 'GET') {
-    const length = Object.keys(params).length
+    const length = params ? Object.keys(params).length : 0
     if (length) {
       url = `${url}${toParameters(params, '?')}`
     }
