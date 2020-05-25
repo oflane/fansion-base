@@ -2,7 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 
-import { getJson } from '~/utils/rest'
+import { gson } from '~/utils/rest'
 
 /**
  * 数据加载插件
@@ -58,17 +58,23 @@ export default class DataLoader {
       this.load()
     }
   }
+
+  /**
+   * 加载数据方法
+   * @param reset 是否重置插件
+   * @returns {Promise<unknown>}
+   */
   load (reset = false) {
-    let plugs = this.plugs
+    const plugs = this.plugs
     if (reset) {
       plugs.forEach(p => p.reset && p.reset())
     }
-    let parameters = {}
+    const parameters = {}
     Object.assign(parameters, this.parameters, ...plugs.map(p => p.getParameters && p.getParameters()))
-    let _self = this
-    return getJson(this.url, parameters).then(res => {
+    const _self = this
+    return gson(this.url, parameters).then(res => {
       if (_self.model) {
-        let keys = _self.model.split('.')
+        const keys = _self.model.split('.')
         let p = _self.page
         keys.forEach((key, i) => {
           if (i === keys.length - 1) {

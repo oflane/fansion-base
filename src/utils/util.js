@@ -85,7 +85,7 @@ const compareObj = (left, right) => (Object.is(left, right) || left === right) ?
  * 属性代理对象
  * @type {{set: (function(): undefined), enumerable: boolean, get: (function(): undefined), configurable: boolean}}
  */
-let sharedPropertyDefinition = {
+const sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
   get: empty,
@@ -168,6 +168,13 @@ const isNotEmptyObject = v => typeof v === 'object' && Object.keys(v).length > 0
  * @returns {*|boolean}
  */
 const isVueComponent = v => v && (typeof v.template === 'string' || typeof v.render === 'function')
+
+/**
+ * 判断对象是否为方法
+ * @param val 参数
+ * @returns {*|boolean}
+ */
+const isFunction = val => val && typeof val === 'function'
 /**
  * 判断对象是否为Promise对象
  * @param v 指定的值
@@ -207,6 +214,8 @@ let message = ({type = 'info', message, items, html = false, autoClose = true}) 
  * @returns {*}
  */
 const setMessageComp = (msg) => (message = msg)
+
+
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -232,6 +241,7 @@ export {
   isEmptyObject,
   isNotEmptyObject,
   isVueComponent,
+  isFunction,
   isPromise,
   simulatePromise,
   emptyPromise,

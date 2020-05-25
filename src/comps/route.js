@@ -3,7 +3,7 @@
  */
 import Vue from 'vue'
 import Router from 'vue-router'
-import {getJson} from '../utils/rest'
+import {gson} from '../utils/rest'
 import {isPromise, sure, emptyPromise} from '../utils/util'
 import pages from './pages'
 
@@ -88,7 +88,7 @@ const addRoute = (routes) => Array.isArray(routes) && getRouter().addRoutes(rout
  * @param v 原对象
  * @returns {Promise<any>}
  */
-const convertLoader = v => typeof v === 'function' ? new Promise((resolve) => resolve(v())) : typeof v === 'string' ? getJson(v) : isPromise(v) ? v : emptyPromise
+const convertLoader = v => typeof v === 'function' ? new Promise((resolve) => resolve(v())) : typeof v === 'string' ? gson(v) : isPromise(v) ? v : emptyPromise
 /**
  * 添加路由加载器，进行路由加载
  * @param loader 加载起

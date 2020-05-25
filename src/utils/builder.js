@@ -1,7 +1,7 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-import {getJson} from './rest'
+import {gson} from './rest'
 import {isPromise} from './util'
 
 /**
@@ -27,7 +27,7 @@ export default {
    * @param key 键值名称
    * @return {function(*=, *=): Promise<* | never>}
    */
-  loader: (center, key = 'name') => (data, cb) => data && (data = (typeof data === 'string' ? getJson(data) : data)) && isPromise(data) ? data.then(res => add2Center(center, res, cb, key)) : add2Center(center, data, cb, key),
+  loader: (center, key = 'name') => (data, cb) => data && (data = (typeof data === 'string' ? gson(data) : data)) && isPromise(data) ? data.then(res => add2Center(center, res, cb, key)) : add2Center(center, data, cb, key),
 
   /**
    * 生成map注册方法

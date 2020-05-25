@@ -12,7 +12,7 @@ const DAFAULT_OPENER = 'default'
  * 对话框容器集合
  * @type {{}}
  */
-let openers = {}
+const openers = {}
 
 /**
  * 根据路径加载页面元数据

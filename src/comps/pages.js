@@ -8,18 +8,18 @@ import {sure} from '../utils/util'
  * 页面注册中心
  * @type {{}}
  */
-let pageComps = {}
+const pageComps = {}
 
 /**
  * 页面元数据注册中心
  * @type {{}}
  */
-let pageMetas = {}
+const pageMetas = {}
 /**
  * 页面元数据加载规则集合
  * @type {Array}
  */
-let rules = []
+const rules = []
 
 /**
  * 根据模板名称获取模板对象
@@ -52,7 +52,7 @@ const getPageMeta = (name) => {
   if (meta) {
     return meta
   }
-  let component = getPageComp(name)
+  const component = getPageComp(name)
   return component ? sure(meta = {component}) && sure(addPageMeta(name, meta)) && meta : rules.firstNotNull(r => r(name, addPageMeta, pageMetas))
 }
 /**
