@@ -12,16 +12,17 @@ import {repeat} from './util'
  * @param components 模板中使用的自定义组件
  */
 export const toRender = (vm, template, components) => {
-  let options = vm.$options
-  let tmpl = template || options.template
+  const options = vm.$options
+  const tmpl = template || options.template
   if (!tmpl) {
     return
   }
-  let ref = Vue.compile(tmpl, {
+  const ref = Vue.compile(tmpl, {
     shouldDecodeNewlines: false,
     delimiters: options.delimiters
   }, vm)
   if (components) {
+    // eslint-disable-next-line no-prototype-builtins
     if (!options.hasOwnProperty('components')) {
       options.components = Object.create(options.components)
     }
@@ -41,7 +42,7 @@ const emptyRender = Vue.compile('<div></div>')
  * @param vm
  */
 export const resetRender = (vm) => {
-  let options = vm.$options
+  const options = vm.$options
   options.render = emptyRender.render
   options.staticRenderFns = emptyRender.staticRenderFns
 }
@@ -57,7 +58,7 @@ export const toProps = (options, exclude, alias, bind) => {
   if (!options) {
     return ''
   }
-  let flag = Array.isArray(exclude)
+  const flag = Array.isArray(exclude)
   if (!alias) {
     alias = {}
   }
@@ -77,7 +78,7 @@ export const toProps = (options, exclude, alias, bind) => {
       }
     } else if (typeof v === 'number') {
       return `${k}=${v}`
-    } else {
+    } else if (v !== null || v !== undefined) {
       return `${k}="${v}"`
     }
   }).join(' ')
@@ -89,7 +90,7 @@ export const toProps = (options, exclude, alias, bind) => {
  * @param hook {string} 钩子名称
  */
 export function callHook (vm, hook) {
-  let handlers = vm.$options[hook]
+  const handlers = vm.$options[hook]
   if (handlers) {
     for (var i = 0, j = handlers.length; i < j; i++) {
       try {
@@ -105,13 +106,22 @@ export function callHook (vm, hook) {
 }
 
 /**
+ * 刷新vue组件
+ * @param vm {VueComponent} vue组件
+ */
+export function refresh (vm) {
+  vm.$mount()
+  callHook(vm, 'mounted')
+}
+
+/**
  * vue的错误处理方法
  * @param err {Error}错误对象
  * @param vm {VueComponent} vue组件
  * @param info {string} 错误信息
  */
 export function handleError (err, vm, info) {
-  let config = Vue.config
+  const config = Vue.config
   if (config.errorHandler) {
     config.errorHandler.call(null, err, vm, info)
   } else {
@@ -145,9 +155,9 @@ function formatComponentName (vm, includeFile) {
         ? vm.$options.name || vm.$options._componentTag
         : vm.name
 
-  let file = vm._isVue && vm.$options.__file
+  const file = vm._isVue && vm.$options.__file
   if (!name && file) {
-    let match = file.match(/([^/\\]+)\.vue$/)
+    const match = file.match(/([^/\\]+)\.vue$/)
     name = match && match[1]
   }
 
@@ -179,11 +189,11 @@ function generateComponentTrace (vm) {
   if (!vm._isVue || !vm.$parent) {
     return ('\n\n(found in ' + (formatComponentName(vm)) + ')')
   }
-  let tree = []
+  const tree = []
   let currentRecursiveSequence = 0
   while (vm) {
     if (tree.length > 0) {
-      let last = tree[tree.length - 1]
+      const last = tree[tree.length - 1]
       if (last.constructor === vm.constructor) {
         currentRecursiveSequence++
         vm = vm.$parent
