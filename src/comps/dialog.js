@@ -3,6 +3,7 @@
  */
 
 import builder from '../utils/builder'
+import pages from "./pages";
 /**
  * 默认对话框
  * @type {string}
@@ -38,6 +39,36 @@ const setDefault = opener => (openers[DAFAULT_OPENER] = opener)
  * @type {*|(function(*=): ({name}|Object))}
  */
 const getDefault = () => openers[DAFAULT_OPENER]
+
+/**
+ * 构建对话框meta信息
+ * @param meta 对话框meta信息
+ * @returns {{component: *, params: *}|{text: *}|*}
+ */
+const buildDialogMeta = (meta) => {
+  if (typeof meta === 'string') {
+    const path = meta
+    try {
+      const {props, component} = pages.getPageMeta(meta)
+      if (!component) {
+        return
+      }
+      return {params: props, component}
+    } catch (e) {
+      const text = path
+      return {text}
+    }
+  }
+  if (typeof meta.component === 'string') {
+    const {props, component} = pages.getPageMeta(meta.component)
+    if (!component) {
+      return
+    }
+    props && (meta.params = meta.params ? Object.assign(props, meta.params) : props)
+    component && (meta.component = component)
+  }
+  return meta
+}
 /**
  * 对话框容器集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -64,6 +95,11 @@ export default {
    * 取得默认的对话框容器
    */
   getDefault,
+
+  /**
+   * 构建对话框meta信息
+   */
+  buildDialogMeta,
   /**
    * 初始化数据
    * @param options

@@ -4,7 +4,7 @@
 
 import DataLoader from './data-loader'
 import dialogSet from './dialog-set'
-import dialogOpeners from './dialog-openers'
+import dialog from './dialog'
 import route from './route'
 import pages from './pages'
 /**
@@ -15,7 +15,7 @@ import pages from './pages'
 export default {
   DataLoader,
   dialogSet,
-  dialogOpeners,
+  dialog,
   pages,
   route
 }

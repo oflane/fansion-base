@@ -13,6 +13,7 @@ import storage from './storage'
 import * as render from './render'
 import builder from './builder'
 import constant from './constant'
+import * as data from './data'
 
 /**
  * 工具方法模块
@@ -28,5 +29,6 @@ export default {
   storage,
   render,
   builder,
-  constant
+  constant,
+  data
 }

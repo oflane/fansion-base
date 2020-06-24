@@ -13,10 +13,10 @@
  * @returns {Promise}
  */
 function load (url, cb) {
-  let scriptEle = document.createElement('script')
+  const scriptEle = document.createElement('script')
   document.body.appendChild(scriptEle)
 
-  let promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, reject) => {
     scriptEle.addEventListener('load', e => {
       removeScript(scriptEle)
       if (!cb) {

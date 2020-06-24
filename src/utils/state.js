@@ -10,8 +10,8 @@ import { deepClone, compareObj } from './util'
  * @param oldVal 旧值
  */
 const stateChange = (vm, dataName, newVal, oldVal) => {
-  let stateName = '__' + dataName + '_state'
-  let originDataName = '__' + dataName + '_data'
+  const stateName = '__' + dataName + '_state'
+  const originDataName = '__' + dataName + '_data'
   switch (vm[stateName] || 0) {
     case 0:
       vm[stateName] = 1
@@ -39,8 +39,8 @@ const watch = (vm, dataName) => {
  * @param dataName 模型名
  */
 const reset = (vm, dataName, state = 0) => {
-  let stateName = '__' + dataName + '_state'
-  let originDataName = '__' + dataName + '_data'
+  const stateName = '__' + dataName + '_state'
+  const originDataName = '__' + dataName + '_data'
   vm[originDataName] = undefined
   vm[stateName] = state
 }
@@ -52,8 +52,8 @@ const reset = (vm, dataName, state = 0) => {
  * @return {boolean} 布尔值
  */
 const isChange = (vm, dataName) => {
-  let stateName = '__' + dataName + '_state'
-  let originDataName = '__' + dataName + '_data'
+  const stateName = '__' + dataName + '_state'
+  const originDataName = '__' + dataName + '_data'
   if (compareObj({...vm[dataName]}, vm[originDataName])) {
     vm[stateName] = 1
   }

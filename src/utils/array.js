@@ -14,7 +14,7 @@
  */
 Array.prototype.firstNotNull = function (f) {
   for (let i = 0; i < this.length; i++) {
-    let r = f(this[i])
+    const r = f(this[i])
     if (r) {
       return r
     }

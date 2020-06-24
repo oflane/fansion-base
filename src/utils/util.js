@@ -8,6 +8,12 @@
  */
 const empty = () => undefined
 /**
+ * 返回自己的方法
+ * @param v 数据对象
+ * @returns {*}
+ */
+const self = v => v
+/**
  * 抛错方法方便代码抛出错误
  * @param error
  */
@@ -167,7 +173,7 @@ const isNotEmptyObject = v => typeof v === 'object' && Object.keys(v).length > 0
  * @param v 指定的值
  * @returns {*|boolean}
  */
-const isVueComponent = v => v && (typeof v.template === 'string' || typeof v.render === 'function')
+const isVueComponent = v => v && (typeof v.template === 'string' || typeof v.render === 'function' || typeof v.created === 'function')
 
 /**
  * 判断对象是否为方法
@@ -205,17 +211,22 @@ const sure = _ => true
  * @param type 信息类型
  * @param message
  */
-let message = ({type = 'info', message, items, html = false, autoClose = true}) => {
+let msgComp = ({type = 'info', message, items, html = false, autoClose = true}) => {
   alert(message + (items && items.length > 0 ? '\n' + items.join('\n') : ''))
 }
+
+/**
+ * 对外发布的方法
+ * @param msg 消息体
+ */
+const message = (msg) => msgComp(msg)
+
 /**
  * 设置消息组件
  * @param msg
  * @returns {*}
  */
-const setMessageComp = (msg) => (message = msg)
-
-
+const setMessageComp = (msg) => (msgComp = msg)
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -223,6 +234,7 @@ const setMessageComp = (msg) => (message = msg)
  */
 export {
   empty,
+  self,
   error,
   deepClone,
   compareObj,

@@ -3,14 +3,15 @@
  */
 
 import Vue from 'vue'
-import openers from './dialog-openers'
-import pages from './pages'
-import {isFunction} from '~/utils/util'
+import dialog from './dialog'
+import {isFunction, isVueComponent} from '~/utils/util'
+import {getData} from '~/utils/data'
 /**
  * 对话框id计数器
  * @type {number}
  */
 let dialogId = 0
+
 /**
  * 对话框管理
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -20,12 +21,28 @@ export default {
   render: function (createElement) {
     const options = this.$options
     function createDialog (d) {
-      const {props, text, html, component, params, dialog, container, title} = d
+      const { text, html, component, params, dialog, container} = d
+      let {title, props} = d
       let tagName = 'custom-dialog'
       if (container) {
-        tagName = typeof container === 'string' ? container.replace('/', '_') : (container.name || container.toString())
-        !options.components[name] && (options.components[name] = openers.getOpener(container))
+        if (typeof container === 'string') {
+          tagName = container.replace('/', '_') + component._dlgid
+          if (!options.components[tagName]) {
+            options.components[tagName] = dialog.getOpener(container)
+          }
+        } else if (isVueComponent(container)) {
+          if (container.name) {
+            tagName = container.name
+          }
+          tagName = tagName + component._dlgid
+          options.components[tagName] = container
+        }
       }
+      if (!title) {
+        title = component.title ? component.title : component.label ? component.label : component.name
+      }
+      const dp = getData(component, 'dailogProps')
+      dp && (props = props ? Object.assign(props, dp) : dp)
       const on = {}
       if (d['@open']) {
         on.open = d['@open']
@@ -45,7 +62,7 @@ export default {
     opener: Object
   },
   components: {
-    'custom-dialog': (r) => r(openers && openers.getDefault())
+    'custom-dialog': (r) => r(dialog && dialog.getDefault())
   },
   created () {
     const $dialogs = this
@@ -90,21 +107,7 @@ export default {
           count++
         })
       }
-      let dlg = component
-      if (typeof component === 'string') {
-        const path = component
-        try {
-          const {props, component} = pages.getPageMeta(path)
-          dlg = {params: props, component}
-        } catch (e) {
-          const text = path
-          dlg = {text}
-        }
-      } else if (typeof dlg.component === 'string') {
-        const {props, component} = pages.getPageMeta(dlg.component)
-        props && (dlg.params = dlg.params ? Object.assign(props, dlg.params) : props)
-        component && (dlg.component = component)
-      }
+      const dlg = dialog.buildDialogMeta(component)
       const len = dls.length
       if (dlg.component) {
         for (let i = len - 1; i >= 0; i--) {
@@ -121,12 +124,6 @@ export default {
             cvn.splice(i)
           } else {
             this.$children[i].show()
-            if (isFunction(dlg['@close'])) {
-              this.$children[i].$once('close', () => {
-                isFunction(dlg['@close']) && dlg['@close'].apply(arguments)
-              })
-            }
-            this.triggerOpen(dlg)
             return this.$children[i]
           }
         }

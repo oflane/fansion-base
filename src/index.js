@@ -4,6 +4,7 @@
 import utils from './utils'
 import mixins from './mixins'
 import comps from './comps'
+import dialog from "./comps/dialog";
 
 /**
  * 版本号
@@ -22,7 +23,7 @@ const init = (option) => {
   }
   option.pages && comps.pages.init(option.pages)
   option.router && comps.route.init(option.router)
-  option.dialogs && comps.dialogOpeners.init(option.dialogs)
+  option.dialogs && comps.dialog.init(option.dialogs)
 }
 
 /**
