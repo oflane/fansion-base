@@ -4,6 +4,7 @@
 
 import builder from '../utils/builder'
 import pages from "./pages";
+import {isVueComponent} from "../utils/util";
 /**
  * 默认对话框
  * @type {string}
@@ -58,6 +59,8 @@ const buildDialogMeta = (meta) => {
       const text = path
       return {text}
     }
+  } else if (isVueComponent(meta)) {
+    return {component: meta}
   }
   if (typeof meta.component === 'string') {
     const {props, component} = pages.getPageMeta(meta.component)

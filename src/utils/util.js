@@ -206,6 +206,16 @@ const emptyPromise = new Promise(empty)
  * @param _
  */
 const sure = _ => true
+
+/**
+ * 返回上级实现
+ * @param vm vue组件
+ * @param home 当没有上一层时是否回指定页面
+ * @param target 目标页面路径，默认为/
+ * @return {any}
+ */
+const backPrev = (vm, home, target = '/') => window.history.length <= 1 ? (home ? (vm && vm.$router ? vm.$router.push(target) : (window.location = target)) : window.close()) : (vm && vm.$router ? vm.$router.back() : window.history.back())
+
 /**
  * 显示信息
  * @param type 信息类型
@@ -259,5 +269,6 @@ export {
   emptyPromise,
   message,
   setMessageComp,
-  sure
+  sure,
+  backPrev
 }
