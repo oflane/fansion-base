@@ -165,7 +165,7 @@ export const postJson = (url, params = {}) => sendRequestJson(getRestUrl(url), p
  * @return {Promise<any>} 返回json
  * @param cb 回调方法
  */
-export const pson = (url, params = {}, cb = empty) => post2Text(url, params).then(cb)
+export const pson = (url, params = {}, cb = empty) => postJson(url, params).then(cb)
 
 /**
  * POST方法提交数据
