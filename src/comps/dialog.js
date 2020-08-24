@@ -3,8 +3,8 @@
  */
 
 import builder from '../utils/builder'
-import pages from "./pages";
-import {isVueComponent} from "../utils/util";
+import pages from './pages'
+import {isVueComponent} from '../utils/util'
 /**
  * 默认对话框
  * @type {string}

@@ -3,7 +3,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 
-import {isFunction} from './util';
+import {isFunction} from './util'
 
 /**
  * 获取对象指定属性值

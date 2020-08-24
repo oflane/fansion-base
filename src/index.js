@@ -4,7 +4,6 @@
 import utils from './utils'
 import mixins from './mixins'
 import comps from './comps'
-import dialog from "./comps/dialog";
 
 /**
  * 版本号

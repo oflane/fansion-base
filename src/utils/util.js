@@ -2,7 +2,7 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-
+import Vue from 'vue'
 /**
  * 空方法
  */
@@ -217,6 +217,33 @@ const sure = _ => true
 const backPrev = (vm, home, target = '/') => window.history.length <= 1 ? (home ? (vm && vm.$router ? vm.$router.push(target) : (window.location = target)) : window.close()) : (vm && vm.$router ? vm.$router.back() : window.history.back())
 
 /**
+ * 根据模块是否安装，对组件进行初始化
+ * @param pluginName 模块名
+ * @param options 模块选项
+ * @param v vue全局对象Vue
+ */
+const init5Exist = (pluginName, options, v = Vue) => {
+  const plugins = v._installedPlugins
+  if (plugins) {
+    const plugin = plugins.find(v => v.name === pluginName)
+    if (plugin) {
+      v.use(plugin)
+      isFunction(plugin.init) && plugin.init(options)
+    }
+  }
+}
+
+/**
+ * 调用某对象的指定方法并传入回调反方法，如果无此方法，直接回调
+ * @param obj
+ * @param method
+ * @param cb
+ */
+const callback = (obj, method, cb) => {
+  obj && obj[method] && isFunction(obj[method]) ? obj[method](cb) : cb && cb()
+}
+
+/**
  * 显示信息
  * @param type 信息类型
  * @param message
@@ -270,5 +297,7 @@ export {
   message,
   setMessageComp,
   sure,
-  backPrev
+  backPrev,
+  init5Exist,
+  callback
 }

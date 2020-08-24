@@ -135,10 +135,10 @@ export default {
       dls.push(dlg)
       this._dialogs = dls
     },
-    closeCurrent (flag) {
+    closeCurrent (data) {
       const c = this.getCurrent()
       if (c) {
-        c.hide(flag)
+        c.hide(data)
       }
     },
     getCurrent () {
