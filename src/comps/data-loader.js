@@ -2,7 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 
-import { gson } from '~/utils/rest'
+import { gson, furl } from '~/utils/rest'
 
 /**
  * 数据加载插件
@@ -48,21 +48,21 @@ export default class DataLoader {
 
   /**
    * 设置固定的加载参数
-   * @param key 参数家宅
-   * @param parameters 参数对象
+   * @param name 参数家宅
+   * @param value 参数对象
    * @param load 布尔值是否出发加载操作
    */
   setParameter (name, value, load = true) {
     this.parameters[name] = value
     if (load) {
-      this.load()
+      return this.load()
     }
   }
 
   /**
    * 加载数据方法
    * @param reset 是否重置插件
-   * @returns {Promise<unknown>}
+   * @returns {Promise<void>}
    */
   load (reset = false) {
     const plugs = this.plugs
@@ -72,7 +72,7 @@ export default class DataLoader {
     const parameters = {}
     Object.assign(parameters, this.parameters, ...plugs.map(p => p.getParameters && p.getParameters()))
     const _self = this
-    return gson(this.url, parameters).then(res => {
+    return gson(furl(this.url, parameters), parameters).then(res => {
       if (_self.model) {
         const keys = _self.model.split('.')
         let p = _self.page

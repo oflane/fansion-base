@@ -214,7 +214,7 @@ const sure = _ => true
  * @param target 目标页面路径，默认为/
  * @return {any}
  */
-const backPrev = (vm, home, target = '/') => window.history.length <= 1 ? (home ? (vm && vm.$router ? vm.$router.push(target) : (window.location = target)) : window.close()) : (vm && vm.$router ? vm.$router.back() : window.history.back())
+const backPrev = (vm, home, target = '/') => (window.history.length <= 1 || window.history.state == null) ? (home ? (vm && vm.$router ? vm.$router.push(target) : (window.location = target)) : window.close()) : (vm && vm.$router ? vm.$router.back() : window.history.back())
 
 /**
  * 根据模块是否安装，对组件进行初始化
