@@ -93,19 +93,21 @@ export default {
       const cel = this.$el.children
       if (this.$el && this.$el.children.length > 0) {
         let count = 0
-        $cvm.forEach(($e, i) => {
+        for (let i = 0; i < $cvm.length; i++) {
+          const $e = $cvm[i]
           if ($e.isVisible ? $e.isVisible() : cel[i].style.display !== 'none') {
-            return
+            continue
           }
           if (dls[i].dep && document.querySelector(dls[i].dep)) {
-            return
+            continue
           }
           cel[i].remove()
           $cvm.splice(i - count, 1)
           dls.splice(i - count, 1)
           cvn.splice(i - count, 1)
           count++
-        })
+          i--
+        }
       }
       const dlg = dialog.buildDialogMeta(component)
       const len = dls.length

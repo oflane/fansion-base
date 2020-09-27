@@ -84,6 +84,7 @@ export default class DataLoader {
           }
         })
       }
+      typeof res.totalElements === 'string' && (res.totalElements = res.totalElements * 1)
       _self.success && _self.success.call(_self.page, res)
       plugs.forEach(p => p.refreshData && p.refreshData(res))
     }).catch(err => {
