@@ -126,7 +126,7 @@ const typeLoader = (center, typeKey = 'type', key = 'name', handle = self) => (d
  * @param handle 数据转换
  * @returns {function(*, *=, *=): {name}|Object}
  */
-const typeRegister = (center, typeKey = 'type', key = 'name', handle = self) => (data, target, type = 'default') => add2TypeRegCenter(center, data, target, typeKey, key, handle, type)
+const typeRegister = (center, typeKey = 'type', key = 'name', handle = self, defaultType = 'default') => (data, target, type = defaultType) => add2TypeRegCenter(center, data, target, typeKey, key, handle, type)
 
 /**
  * 生成按类型集合注册方法

@@ -228,7 +228,7 @@ const init5Exist = (pluginName, options, v = Vue) => {
     const plugin = plugins.find(v => v.name === pluginName)
     if (plugin) {
       v.use(plugin)
-      isFunction(plugin.init) && plugin.init(options)
+      isFunction(plugin.init) && plugin.init(isFunction(options) ? options() : options)
     }
   }
 }

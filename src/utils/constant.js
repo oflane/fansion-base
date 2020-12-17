@@ -14,5 +14,9 @@ export default {
   /**
    * 添加业务时使用的临时id
    */
-  ADD_ID: '__add'
+  ADD_ID: '__add',
+  /**
+   * 加载所有数据键值
+   */
+  ALL_DATA: '__all_data'
 }
