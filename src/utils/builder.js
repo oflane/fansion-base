@@ -24,23 +24,25 @@ function add2LoadCenter (center, data, cb, key, handle) {
  * @param handle 数据转换器
  * @param typeValue 类型
  */
-function addArrayObject2Center (center, data, typeKey, key, handle, typeValue) {
+function addArrayObject2Center (center, data, typeKey, key, handle, typeValue, defaultType) {
   if (Array.isArray(data)) {
     data.forEach(v => {
-      const type = typeValue === 'default' && v[typeKey] ? v[typeValue] : typeValue
+      const type = !typeValue && v[typeKey] ? v[typeKey] : (typeValue || defaultType)
       center[type] || (center[type] = {})
       v[key] && (center[type][v[key]] = handle(v))
     })
   } else if (typeof data === 'object') {
+    const isLevel = !typeValue && data.__regLevel
     Object.entries(data).forEach(([k, v]) => {
       if (!v) {
         return
       }
-      if (typeValue === '') {
+      if (isLevel) {
         addArrayObject2Center(center, v, null, key, handle, k)
       } else {
-        center[typeValue] || (center[typeValue] = {})
-        center[typeValue][k] = handle(v)
+        const type = !typeValue && v[typeKey] ? v[typeKey] : (typeValue || defaultType)
+        center[type] || (center[type] = {})
+        center[type][k] = handle(v)
       }
     })
   }
@@ -73,7 +75,7 @@ function add2TypeLoadCenter (center, data, cb, typeKey, key, handle, typeValue) 
  * @param handle 数据转换器
  * @param typeValue 类型
  */
-function add2TypeRegCenter (center, data, target, typeKey, key, handle, typeValue) {
+function add2TypeRegCenter (center, data, target, typeKey, key, handle, typeValue, defaultType) {
   if (!data) {
     return
   }
@@ -81,7 +83,7 @@ function add2TypeRegCenter (center, data, target, typeKey, key, handle, typeValu
     center[typeValue] || (center[typeValue] = {})
     center[typeValue][data] = handle(target)
   } else {
-    addArrayObject2Center(center, data, typeKey, key, handle, typeValue)
+    addArrayObject2Center(center, data, typeKey, key, handle, typeValue, defaultType)
   }
 }
 
@@ -126,7 +128,7 @@ const typeLoader = (center, typeKey = 'type', key = 'name', handle = self) => (d
  * @param handle 数据转换
  * @returns {function(*, *=, *=): {name}|Object}
  */
-const typeRegister = (center, typeKey = 'type', key = 'name', handle = self, defaultType = 'default') => (data, target, type = defaultType) => add2TypeRegCenter(center, data, target, typeKey, key, handle, type)
+const typeRegister = (center, typeKey = 'type', key = 'name', handle = self, defaultType = 'default') => (data, target, type) => add2TypeRegCenter(center, data, target, typeKey, key, handle, type, defaultType)
 
 /**
  * 生成按类型集合注册方法

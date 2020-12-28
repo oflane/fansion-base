@@ -9,6 +9,7 @@ import script from './script'
 import state from './state'
 import * as rest from './rest'
 import * as util from './util'
+import plugin from './plugin'
 import storage from './storage'
 import * as render from './render'
 import builder from './builder'
@@ -30,5 +31,6 @@ export default {
   render,
   builder,
   constant,
-  data
+  data,
+  plugin
 }
