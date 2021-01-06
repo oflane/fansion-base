@@ -92,7 +92,6 @@ export default {
       const $cvm = this.$children
       const cel = this.$el.children
       if (this.$el && this.$el.children.length > 0) {
-        let count = 0
         for (let i = 0; i < $cvm.length; i++) {
           const $e = $cvm[i]
           if ($e.isVisible ? $e.isVisible() : cel[i].style.display !== 'none') {
@@ -102,10 +101,10 @@ export default {
             continue
           }
           cel[i].remove()
-          $cvm.splice(i - count, 1)
-          dls.splice(i - count, 1)
-          cvn.splice(i - count, 1)
-          count++
+          const dvms = $cvm.splice(i, 1)[0]
+          dvms.$destroy()
+          dls.splice(i, 1)
+          cvn.splice(i, 1)
           i--
         }
       }
@@ -116,12 +115,13 @@ export default {
           if (!dls[i].component) {
             continue
           }
-          if (dls[i].component._dlgid !== dlg.component._dlgid) {
+          if (dlg.component._dlgid !== dls[i].component._dlgid) {
             continue
           }
           if (dlg.refresh) {
             cel[i].remove()
-            $cvm.splice(i)
+            const dvms = $cvm.splice(i, 1)[0]
+            dvms.$destroy()
             dls.splice(i)
             cvn.splice(i)
           } else {

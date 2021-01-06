@@ -50,11 +50,11 @@ const buildDialogMeta = (meta) => {
   if (typeof meta === 'string') {
     const path = meta
     try {
-      const {props, component} = pages.getPageMeta(meta)
-      if (!component) {
+      const pageMeta = pages.getPageMeta(meta)
+      if (!pageMeta || !pageMeta.component) {
         return
       }
-      return {params: props, component}
+      return {params: pageMeta.props, component: pageMeta.component}
     } catch (e) {
       const text = path
       return {text}
@@ -63,12 +63,12 @@ const buildDialogMeta = (meta) => {
     return {component: meta}
   }
   if (typeof meta.component === 'string') {
-    const {props, component} = pages.getPageMeta(meta.component)
-    if (!component) {
+    const pageMeta = pages.getPageMeta(meta.component)
+    if (!pageMeta || !pageMeta.component) {
       return
     }
-    props && (meta.params = meta.params ? Object.assign(props, meta.params) : props)
-    component && (meta.component = component)
+    pageMeta.props && (meta.params = meta.params ? Object.assign({}, pageMeta.props, meta.params) : pageMeta.props)
+    meta.component = pageMeta.component
   }
   return meta
 }
