@@ -100,9 +100,9 @@ export default {
           if (dls[i].dep && document.querySelector(dls[i].dep)) {
             continue
           }
+          // const dvms = $cvm.splice(i, 1)[0]
+          $e.$destroy()
           cel[i].remove()
-          const dvms = $cvm.splice(i, 1)[0]
-          dvms.$destroy()
           dls.splice(i, 1)
           cvn.splice(i, 1)
           i--
@@ -119,9 +119,9 @@ export default {
             continue
           }
           if (dlg.refresh) {
-            cel[i].remove()
-            const dvms = $cvm.splice(i, 1)[0]
+            const dvms = $cvm[i]
             dvms.$destroy()
+            cel[i].remove()
             dls.splice(i)
             cvn.splice(i)
           } else {
