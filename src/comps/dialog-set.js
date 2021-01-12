@@ -88,11 +88,17 @@ export default {
     },
     show (component) {
       const dls = this._dialogs
+      const dlg = dialog.buildDialogMeta(component)
+      if (dlg.component) {
+        dlg.component._dlgid = dialogId++
+      }
+      dls.push(dlg)
       const cvn = this._vnode.children
       const $cvm = this.$children
       const cel = this.$el.children
       if (this.$el && this.$el.children.length > 0) {
-        for (let i = 0; i < $cvm.length; i++) {
+        let len = this.$el.children.length
+        for (let i = 0; i < len; i++) {
           const $e = $cvm[i]
           if ($e.isVisible ? $e.isVisible() : cel[i].style.display !== 'none') {
             continue
@@ -100,42 +106,15 @@ export default {
           if (dls[i].dep && document.querySelector(dls[i].dep)) {
             continue
           }
-          // const dvms = $cvm.splice(i, 1)[0]
-          $e.$destroy()
+          $cvm.splice(i, 1)
+          Vue.nextTick(() => $e.$destroy())
           cel[i].remove()
           dls.splice(i, 1)
           cvn.splice(i, 1)
+          len--
           i--
         }
       }
-      const dlg = dialog.buildDialogMeta(component)
-      const len = dls.length
-      if (dlg.component) {
-        for (let i = len - 1; i >= 0; i--) {
-          if (!dls[i].component) {
-            continue
-          }
-          if (dlg.component._dlgid !== dls[i].component._dlgid) {
-            continue
-          }
-          if (dlg.refresh) {
-            const dvms = $cvm[i]
-            dvms.$destroy()
-            cel[i].remove()
-            dls.splice(i)
-            cvn.splice(i)
-          } else {
-            this.$children[i].show()
-            return this.$children[i]
-          }
-        }
-      }
-
-      if (dlg.component) {
-        dlg.component._dlgid = dialogId++
-      }
-      dls.push(dlg)
-      this._dialogs = dls
     },
     closeCurrent (data) {
       const c = this.getCurrent()
