@@ -220,9 +220,10 @@ const backPrev = (vm, home, target = '/') => (window.history.length <= 1 || wind
  * @param obj
  * @param method
  * @param cb
+ * @param defaultValue 回调默认值
  */
-const callback = (obj, method, cb) => {
-  obj && obj[method] && isFunction(obj[method]) ? obj[method](cb) : cb && cb()
+const callback = (obj, method, cb, defaultValue) => {
+  obj && obj[method] && isFunction(obj[method]) ? obj[method](cb, defaultValue) : cb && cb(defaultValue)
 }
 
 /**

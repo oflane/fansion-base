@@ -31,6 +31,13 @@ const init5Exist = (pluginName, options, v = Vue) => {
   }
 }
 /**
+ * 获取可插入组件对象
+ * @param pluginName 模块名
+ * @param v vue全局对象Vue
+ */
+const getPlugModule = (pluginName, v = Vue) => v._installedPlugins && v._installedPlugins.find(v => v.name === pluginName)
+
+/**
  * 获取安装缓存
  * @param name 插件名称
  * @returns {*}
@@ -44,5 +51,6 @@ const getInstallCache = (name) => {
 
 export default {
   init5Exist,
-  getInstallCache
+  getInstallCache,
+  getPlugModule
 }
