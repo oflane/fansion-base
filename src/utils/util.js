@@ -247,6 +247,54 @@ const message = (msg) => msgComp(msg)
  * @returns {*}
  */
 const setMessageComp = (msg) => (msgComp = msg)
+
+/**
+ * 判断字符串是否为保留字
+ * @param str 字符串
+ * @returns {boolean} 布尔
+ */
+const isReserved = (str) => {
+  const c = (str + '').charCodeAt(0)
+  return c === 0x24 || c === 0x5F
+}
+
+/**
+ * 自实现绑定
+ * @param fn 方法对象
+ * @param ctx 所属对象
+ * @returns {function(*=): *} 包装后方法
+ */
+function polyfillBind (fn, ctx) {
+  function boundFn (a) {
+    const l = arguments.length
+    return l
+      ? l > 1
+        ? fn.apply(ctx, arguments)
+        : fn.call(ctx, a)
+      : fn.call(ctx)
+  }
+
+  boundFn._length = fn.length
+  return boundFn
+}
+
+/**
+ * 本地绑定
+ * @param fn 方法对象
+ * @param ctx 所属对象
+ * @returns {any} 包装后方法
+ */
+function nativeBind (fn, ctx) {
+  return fn.bind(ctx)
+}
+
+/**
+ * 方法绑定
+ * @type {{(Function, Object): any, (Function, Object): function(*=): *}}
+ */
+const bind = Function.prototype.bind
+  ? nativeBind
+  : polyfillBind
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -281,5 +329,7 @@ export {
   setMessageComp,
   sure,
   backPrev,
-  callback
+  callback,
+  isReserved,
+  bind
 }

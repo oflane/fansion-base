@@ -85,7 +85,7 @@ export const parseRestPath = url => {
  */
 export const furl = (url, data) => {
   parseRestPath(url).forEach(p => {
-    url = url.replace(':' + p, encodeURIComponent(data[p]))
+    url = url.replace(':' + p, encodeURIComponent(data[p] || ''))
   })
   return url
 }
