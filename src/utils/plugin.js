@@ -49,8 +49,14 @@ const getInstallCache = (name) => {
   return c
 }
 
+/**
+ * 清空缓存的不用的option数据
+ */
+const clearInstallCache = () => (Object.keys(installCache).forEach(key => getInstallCache(key)))
+
 export default {
   init5Exist,
   getInstallCache,
-  getPlugModule
+  getPlugModule,
+  clearInstallCache
 }

@@ -4,6 +4,7 @@
  */
 import path from 'path'
 import {message, isEmptyObject, error, empty} from './util'
+import urls from './urls'
 /**
  * 后台请求工具
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -27,7 +28,7 @@ const SILENCE = {__silence: 1}
 const SILENCE_KEY = '__silence'
 /**
  * 默认的header信息
- * @type {{Accept: string, Content-Type: string}}
+ * @type {{Accept: string, 'Content-Type': string}}
  */
 const defaultHeaders = {
   Accept: 'application/x-www-form-urlencoded',
@@ -52,6 +53,7 @@ export const silence = (param) => param ? Object.assign(param, SILENCE) : SILENC
  *
  * @param data [Object] json格式的对象
  * @returns {string} 拼接好的formData格式字符串
+ * @param prefix 前缀信息
  */
 export const toParameters = (data, prefix = '') => prefix + Object.entries(data).map(([k, v]) => !v ? undefined : Array.isArray(v) ? v.map(vi => vi ? k + '=' + vi : undefined).join('&') : k + '=' + encodeURIComponent(v)).join('&')
 
@@ -80,10 +82,11 @@ export const parseRestPath = url => {
 /**
  * 提取url中的参数名,进行填充
  * @param url {String} 需要提取的url
- * @param data {Array} 填充数据
+ * @param data {Object} 填充数据
  * @returns 填充后url串
  */
 export const furl = (url, data) => {
+  url = urls.come(url)
   parseRestPath(url).forEach(p => {
     url = url.replace(':' + p, encodeURIComponent(data[p] || ''))
   })
@@ -95,7 +98,7 @@ export const furl = (url, data) => {
  * @param url {string} 请求地址
  * @return {string} 转换后路径
  */
-export const getRestUrl = (url) => path.join(window.$restContext, url)
+export const getRestUrl = (url) => path.join(window.$restContext, urls.come(url))
 /**
  * rest 调用get请求
  * @param url {string} url串不带contextPath

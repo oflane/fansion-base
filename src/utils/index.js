@@ -15,6 +15,7 @@ import * as render from './render'
 import builder from './builder'
 import constant from './constant'
 import * as data from './data'
+import urls from './urls'
 
 /**
  * 工具方法模块
@@ -24,6 +25,7 @@ import * as data from './data'
 export default {
   mod,
   state,
+  urls,
   rest,
   script,
   util,

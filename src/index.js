@@ -23,6 +23,7 @@ const init = (option) => {
   option.pages && comps.pages.init(option.pages)
   option.router && comps.route.init(option.router)
   option.dialogs && comps.dialog.init(option.dialogs)
+  option.urls && utils.urls.init(option.urls)
 }
 
 /**

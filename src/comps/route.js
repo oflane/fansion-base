@@ -44,7 +44,7 @@ const setPageLoader = v => v && (pageLoader = v)
  */
 let parserRules = [
   (path) => {
-    let i = path.indexOf('->')
+    const i = path.indexOf('->')
     let target = path
     let same = true
     i > 0 && sure(target = path.substring(i + 2)) && sure(path = path.substring(0, i)) && (same = false)
@@ -102,7 +102,7 @@ const addLoader = loader => loader && (Array.isArray(loader) && loader.length > 
  * @param rules 路由解析规则
  * @param pageLoader 页面记载器
  */
-const init = ({routes, routeLoader, rules, pageLoader}) => sure(addRoute(routes)) && sure(addLoader(routeLoader)) && sure(addParserRules(rules)) && setPageLoader(pageLoader)
+const init = ({routes, routeLoader, rules, pageLoader}) => sure(addRoute(routes)) && sure(addParserRules(rules)) && sure(addLoader(routeLoader)) && setPageLoader(pageLoader)
 /**
  * 路由扩展工具类
  * @author Paul.Yang E-mail:yaboocn@qq.com
