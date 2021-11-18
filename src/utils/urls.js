@@ -22,6 +22,9 @@ const come = (key) => {
  */
 let parserRules = [
   (path) => {
+    if (typeof path !== 'string') {
+      return null
+    }
     const i = path.indexOf('->')
     return i > 0 ? {key: path.substring(i + 2), url: path.substring(0, i)} : null
   }
@@ -38,7 +41,7 @@ const addParserRules = ps => ps && (Array.isArray(ps) ? (parserRules = [...ps, .
  * @param route 路由数据
  * @returns {*}
  */
-const parseUrl = (url) => parserRules.firstNotNull(r => r(url))
+const parseUrl = (url) => parserRules.firstNotNull(r => r(url)) || url
 
 /**
  * 添加url数据
