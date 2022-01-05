@@ -113,6 +113,18 @@ export function refresh (vm) {
   vm.$mount()
   callHook(vm, 'mounted')
 }
+/**
+ * 强制重新展现，这个主要针对自定义在beforeMount中编译template组件
+ * @param vm {VueComponent} vue组件
+ */
+export function rerender (vm) {
+  resetRender(vm)
+  vm._update(vm._render(), false)
+  vm.$mount()
+  if (vm.$vnode) {
+    callHook(vm, 'mounted')
+  }
+}
 
 /**
  * vue的错误处理方法
