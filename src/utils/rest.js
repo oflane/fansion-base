@@ -64,6 +64,11 @@ export const toParameters = (data, prefix = '') => prefix + Object.entries(data)
 const REG_URLPATTERN = /\/:(\w+)/g
 
 /**
+ * rest请求处理器集合
+ * @type {{}}
+ */
+const restHandlers = {}
+/**
  * 提取url中的参数名
  * @param url 需要提取的url
  * @returns {Array}
@@ -128,7 +133,7 @@ export const getText = (url, params = {}) => sendRequestText(getRestUrl(url), pa
  * @returns {Promise<any>} 异步加载对象
  * @param cb 回调方法
  */
-export const gext = (url, params = {}, cb = empty) => getText(url, params).then(cb)
+export const gext = (url, params = {}, cb) => cb ? getText(url, params).then(cb) : getText(url, params)
 /**
  * POST方法提交数据
  * @param url 请求的url
@@ -136,7 +141,7 @@ export const gext = (url, params = {}, cb = empty) => getText(url, params).then(
  * @return {Promise<any>} 返回json
  * @param cb 回调方法
  */
-export const post = (url, params = {}, cb = empty) => sendRequestJson(getRestUrl(url), params, 'POST')
+export const post = (url, params = {}) => sendRequestJson(getRestUrl(url), params, 'POST')
 
 /**
  * POST方法提交数据，返回文本
@@ -152,7 +157,7 @@ export const post2Text = (url, params = {}) => sendRequestText(getRestUrl(url), 
  * @return {Promise<any>} 返回文本
  * @param cb 回调方法
  */
-export const p2ext = (url, params = {}, cb = empty) => post2Text(url, params).then(cb)
+export const p2ext = (url, params = {}, cb) => cb ? post2Text(url, params).then(cb) : post2Text(url, params)
 /**
  * POST方法提交数据
  * @param url 请求的url
@@ -168,7 +173,7 @@ export const postJson = (url, params = {}) => sendRequestJson(getRestUrl(url), p
  * @return {Promise<any>} 返回json
  * @param cb 回调方法
  */
-export const pson = (url, params = {}, cb = empty) => postJson(url, params).then(cb)
+export const pson = (url, params = {}, cb) => cb ? postJson(url, params).then(cb) : postJson(url, params)
 
 /**
  * POST方法提交数据
@@ -185,7 +190,7 @@ export const postJson2Text = (url, params = {}) => sendRequestText(getRestUrl(ur
  * @return {Promise<any>} 返回文本
  * @param cb 回调方法
  */
-export const pson2ext = (url, params = {}, cb = empty) => postJson2Text(url, params).then(cb)
+export const pson2ext = (url, params = {}, cb) => postJson2Text(url, params).then(cb)
 /**
  *
  * @param url [String] 请求地址
@@ -246,6 +251,10 @@ export const sendRequest = async (url, params = {}, type = 'GET', header) => {
   params && (params[SILENCE_KEY] = null) && delete params[SILENCE_KEY]
   try {
     return await fetch(url, requestConfig).then((response) => {
+      const handler = restHandlers[response.status]
+      if (handler) {
+        return handler(response)
+      }
       switch (response.status) {
         case 200:
           return response
@@ -318,4 +327,26 @@ export const createRequest = (url, params = {}, type = 'GET', header) => {
     value: isJson ? JSON.stringify(params) : toParameters(params)
   })
   return fetch(url, requestConfig)
+}
+
+/**
+ * 添加rest
+ * @param key 处理状态码
+ * @param handler 处理器方法
+ */
+export const addRestHandler = (status, handler) => {
+  if(typeof key === 'object') {
+    Object.assign(restHandlers, key)
+  } else if(key && handler) {
+    restHandlers[key] = handler
+  }
+}
+
+
+/**
+ * 初始化rest选项
+ * @param options rest相关选项
+ */
+export const init = (options) => {
+  options && options.handler && addRestHandler(options.handler)
 }

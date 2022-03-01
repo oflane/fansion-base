@@ -78,7 +78,7 @@ export const toProps = (options, exclude, alias, bind) => {
       }
     } else if (typeof v === 'number') {
       return `${k}=${v}`
-    } else if (v !== null || v !== undefined) {
+    } else if (v !== null && v !== undefined) {
       return `${k}="${v}"`
     }
   }).join(' ')

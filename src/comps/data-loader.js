@@ -2,7 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 
-import { gson, furl } from '~/utils/rest'
+import { post, gson, furl } from '~/utils/rest'
 
 /**
  * 数据加载插件
@@ -20,7 +20,13 @@ export default class DataLoader {
    * @param finalCallBack 执行回调
    */
   constructor (url, page, model, success, error, finalCallBack) {
-    this.url = url
+    this.method='GET'
+    if(url.startsWith("POST:") || url.startsWith("post:")){
+      this.method = 'POST'
+      this.url = url.substring(5)
+    } else {
+      this.url = url
+    }
     this.plugs = []
     this.parameters = {}
     this.page = page
@@ -60,6 +66,18 @@ export default class DataLoader {
   }
 
   /**
+   * 设置vue组件的属性到参数中
+   * @param vm vue组件
+   */
+  setVueCompAttrs (vm) {
+    Object.entries(vm.$attrs).forEach(([k, v]) => {
+      const t = typeof v
+      if (k !== 'meta' && k !== 'owner' && k !== 'data' && (t === 'string' || t === 'number' || t === 'boolean')) {
+        this.setParameter(k, v, false)
+      }
+    })
+  }
+  /**
    * 加载数据方法
    * @param reset 是否重置插件
    * @returns {Promise<void>}
@@ -67,12 +85,13 @@ export default class DataLoader {
   load (reset = false) {
     const plugs = this.plugs
     if (reset) {
-      plugs.forEach(p => p.reset && p.reset())
+      plugs.forEach(p => p.loadReset ? p.loadReset() : p.reset && p.reset())
     }
     const parameters = {}
     Object.assign(parameters, this.parameters, ...plugs.map(p => p.getParameters && p.getParameters()))
     const _self = this
-    return gson(furl(this.url, parameters), parameters).then(res => {
+    const req = this.method === 'POST' ? post : gson
+    return req(furl(this.url, parameters), parameters).then(res => {
       if (_self.model) {
         const keys = _self.model.split('.')
         let p = _self.page

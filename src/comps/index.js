@@ -7,6 +7,7 @@ import dialogSet from './dialog-set'
 import dialog from './dialog'
 import route from './route'
 import pages from './pages'
+import store from './store'
 /**
  * 组件列表
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -17,5 +18,6 @@ export default {
   dialogSet,
   dialog,
   pages,
-  route
+  route,
+  store
 }
