@@ -1,7 +1,7 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-import {gson} from '../utils/rest'
+import rest from '../utils/rest'
 import {isPromise, sure, emptyPromise} from '../utils/util'
 
 /**
@@ -54,7 +54,7 @@ const addUrl = (urls) => Array.isArray(urls) && urls.map(v => parseUrl(v)).forEa
  * @param v 原对象
  * @returns {Promise<any>}
  */
-const convertLoader = v => typeof v === 'function' ? new Promise((resolve) => resolve(v())) : typeof v === 'string' ? gson(v) : isPromise(v) ? v : emptyPromise
+const convertLoader = v => typeof v === 'function' ? new Promise((resolve) => resolve(v())) : typeof v === 'string' ? rest.gson(v) : isPromise(v) ? v : emptyPromise
 /**
  * 添加路由加载器，进行路由加载
  * @param loader 加载起

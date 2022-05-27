@@ -1,7 +1,7 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-import { createRequest } from './rest'
+import rest from './rest'
 import { isPromise, simulatePromise } from './util'
 
 /**
@@ -34,4 +34,4 @@ const defaultDependHandle = (comps) => Array.isArray(comps) ? mergeModule(comps)
  * @param deps 依赖的js
  * @param handle 依赖处理方法
  */
-export const depend = (comp, deps, handle = defaultDependHandle) => Promise.all([comp, ...deps].map(d => typeof d === 'string' ? createRequest(d) : isPromise(d) ? d : simulatePromise(d))).then(handle)
+export const depend = (comp, deps, handle = defaultDependHandle) => Promise.all([comp, ...deps].map(d => typeof d === 'string' ? rest.createRequest(d) : isPromise(d) ? d : simulatePromise(d))).then(handle)

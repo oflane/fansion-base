@@ -76,7 +76,7 @@ String.prototype.trim = function () {
  * @param prefix 前缀串
  */
 String.prototype.prefix = function (prefix) {
-  return this.startsWith(prefix) ? this : prefix + this
+  return this.startsWith(prefix) ? '' + this : prefix + this
 }
 
 /**

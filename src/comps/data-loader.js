@@ -2,7 +2,7 @@
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
 
-import { post, gson, furl } from '~/utils/rest'
+import rest from '~/utils/rest'
 
 /**
  * 数据加载插件
@@ -90,8 +90,8 @@ export default class DataLoader {
     const parameters = {}
     Object.assign(parameters, this.parameters, ...plugs.map(p => p.getParameters && p.getParameters()))
     const _self = this
-    const req = this.method === 'POST' ? post : gson
-    return req(furl(this.url, parameters), parameters).then(res => {
+    const req = this.method === 'POST' ? rest.post : rest.gson
+    return req(rest.furl(this.url, parameters), parameters).then(res => {
       if (_self.model) {
         const keys = _self.model.split('.')
         let p = _self.page

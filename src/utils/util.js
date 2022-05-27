@@ -34,6 +34,7 @@ const once = (fn) => {
 /**
  * 提取带参数url的url如带abc/abc/:id
  * @param path 原始路径
+ * @param r 无用参数
  * @returns {string} 提取后路径
  */
 const parsePath = (path, r) => (r = /(\/[^:]*)\/:(\w+)/.exec(path)) && r.length > 1 ? r[1] : path
@@ -230,6 +231,9 @@ const callback = (obj, method, cb, defaultValue) => {
  * 显示信息
  * @param type 信息类型
  * @param message
+ * @param items 详细条目
+ * @param html 是否为html信息
+ * @param autoClose 是否自动关闭
  */
 let msgComp = ({type = 'info', message, items, html = false, autoClose = true}) => {
   alert(message + (items && items.length > 0 ? '\n' + items.join('\n') : ''))

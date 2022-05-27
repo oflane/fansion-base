@@ -31,7 +31,7 @@ const getStore = () => {
  * 判断store是否已经初始化
  * @returns {boolean}
  */
-const isInit = () => store == init
+const isInit = () => store !== null
 
 /**
  * 添加模块

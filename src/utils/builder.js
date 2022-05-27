@@ -1,7 +1,7 @@
 /*
  * Copyright(c) Oflane Software 2017. All Rights Reserved.
  */
-import {gson} from './rest'
+import rest from './rest'
 import {isPromise, self} from './util'
 
 /**
@@ -93,7 +93,7 @@ function add2TypeRegCenter (center, data, target, typeKey, key, handle, typeValu
  * @param key 键值名称
  * @return {function(*=, *=): Promise<* | never>}
  */
-const loader = (center, key = 'name', handle = self) => (data, cb) => data && (data = (typeof data === 'string' ? gson(data) : data)) && isPromise(data) ? data.then(res => add2LoadCenter(center, res, cb, key, handle)) : add2LoadCenter(center, data, cb, key, handle)
+const loader = (center, key = 'name', handle = self) => (data, cb) => data && (data = (typeof data === 'string' ? rest.gson(data) : data)) && isPromise(data) ? data.then(res => add2LoadCenter(center, res, cb, key, handle)) : add2LoadCenter(center, data, cb, key, handle)
 
 /**
  * 生成map注册方法
@@ -120,7 +120,7 @@ const collection = (center, handle = self) => data => data && Array.isArray(data
  * @param handle 数据转换
  * @returns {function(any=, any=, any=): any}
  */
-const typeLoader = (center, typeKey = 'type', key = 'name', handle = self) => (data, cb, type = 'default') => data && (data = (typeof data === 'string' ? gson(data) : data)) && isPromise(data) ? data.then(res => add2TypeLoadCenter(center, res, cb, typeKey, key, handle, type)) : add2TypeLoadCenter(center, data, cb, typeKey, key, handle, type)
+const typeLoader = (center, typeKey = 'type', key = 'name', handle = self) => (data, cb, type = 'default') => data && (data = (typeof data === 'string' ? rest.gson(data) : data)) && isPromise(data) ? data.then(res => add2TypeLoadCenter(center, res, cb, typeKey, key, handle, type)) : add2TypeLoadCenter(center, data, cb, typeKey, key, handle, type)
 /**
  * 按类型生成map注册方法
  * @param center 注册中心
