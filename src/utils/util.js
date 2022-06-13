@@ -299,6 +299,23 @@ function nativeBind (fn, ctx) {
 const bind = Function.prototype.bind
   ? nativeBind
   : polyfillBind
+
+/**
+ * 查找最近的vue组件
+ * @param element 当前组件
+ * @param componentName 查找的组件名
+ * @returns {null|*}
+ */
+const findNearestComponent = (element, componentName) => {
+  let target = element
+  while (target && target.tagName !== 'BODY') {
+    if (target.__vue__ && target.__vue__.$options.name === componentName) {
+      return target.__vue__
+    }
+    target = target.parentNode
+  }
+  return null;
+}
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -335,5 +352,6 @@ export {
   backPrev,
   callback,
   isReserved,
-  bind
+  bind,
+  findNearestComponent
 }

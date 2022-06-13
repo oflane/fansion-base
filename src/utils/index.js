@@ -16,6 +16,7 @@ import builder from './builder'
 import constant from './constant'
 import * as data from './data'
 import urls from './urls'
+import * as dom from './dom'
 
 /**
  * 工具方法模块
@@ -34,5 +35,6 @@ export default {
   builder,
   constant,
   data,
-  plugin
+  plugin,
+  dom
 }
