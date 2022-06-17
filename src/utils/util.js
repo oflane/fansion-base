@@ -301,6 +301,19 @@ const bind = Function.prototype.bind
   : polyfillBind
 
 /**
+ * 获取第一个非空值
+ * @returns {*}
+ */
+const noneValue = function() {
+  for (let i in arguments) {
+    let v = arguments[i]
+    if (v => v !== undefined && v !== null) {
+      return v
+    }
+  }
+  return null
+}
+/**
  * 查找最近的vue组件
  * @param element 当前组件
  * @param componentName 查找的组件名
@@ -353,5 +366,6 @@ export {
   callback,
   isReserved,
   bind,
+  noneValue,
   findNearestComponent
 }
