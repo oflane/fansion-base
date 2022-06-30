@@ -305,9 +305,9 @@ const bind = Function.prototype.bind
  * @returns {*}
  */
 const noneValue = function() {
-  for (let i in arguments) {
+  for (let i = 0; i < arguments.length; i++) {
     let v = arguments[i]
-    if (v => v !== undefined && v !== null) {
+    if (v !== undefined && v !== null) {
       return v
     }
   }

@@ -127,7 +127,10 @@ const jsonHeaders = {
 const instance = axios.create({
   transformRequest: [function (data, headers) {
     // 对 data 进行任意转换处理
-    return data && (typeof params === 'string' ? data : toParameters(data));
+    if(!headers || headers.Accept === 'application/json') {
+      return data && (typeof data === 'string' ? data : JSON.stringify(data));
+    }
+    return data && (typeof data === 'string' ? data : toParameters(data));
   }],
 })
 instance.defaults.timeout = 2500;
