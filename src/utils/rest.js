@@ -134,6 +134,7 @@ const instance = axios.create({
   }],
 })
 instance.defaults.timeout = 2500;
+instance.defaults.headers['X-Requested-With'] = 'XMLHttpRequest';
 instance.interceptors.response.use(response => {
   return response.data
 })
@@ -301,7 +302,7 @@ const createRequest = (url, params = {}, type = 'GET', header) => {
  * @param reject 错误处理
  */
 const addRequestInterceptor = (resolver, reject) => {
-  instance.interceptors.request.use(handle, reject)
+  instance.interceptors.request.use(resolver, reject)
 }
 /**
  * 添加响应拦截器

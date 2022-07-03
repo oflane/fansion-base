@@ -329,6 +329,24 @@ const findNearestComponent = (element, componentName) => {
   }
   return null;
 }
+
+/**
+ * 路径匹配
+ * @param patterns 匹配正则或者路径串数组
+ * @param url 需要匹配的url
+ * @returns {boolean} 布尔值
+ */
+const matchPathList = (patterns, url) =>{
+  // 空集合直接返回false
+  if(patterns == null || patterns.length == 0) {
+    return false;
+  }
+  // 先尝试一下简单匹配，如果可以匹配成功则无需继续模糊匹配
+  if (patterns.indexOf(url) >= 0) {
+    return true;
+  }
+  return patterns.findIndex(v => new RegExp(v).test(url)) >= 0
+}
 /**
  * 常用工具方法集合
  * @author Paul.Yang E-mail:yaboocn@qq.com
@@ -367,5 +385,6 @@ export {
   isReserved,
   bind,
   noneValue,
-  findNearestComponent
+  findNearestComponent,
+  matchPathList
 }
