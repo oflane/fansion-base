@@ -133,7 +133,7 @@ const instance = axios.create({
     return data && (typeof data === 'string' ? data : toParameters(data));
   }],
 })
-instance.defaults.timeout = 2500;
+instance.defaults.timeout = 5000;
 instance.defaults.headers['X-Requested-With'] = 'XMLHttpRequest';
 instance.interceptors.response.use(response => {
   return response.data
