@@ -88,11 +88,13 @@ const parseRulePath = (path) => {
   path = path.prefix('/')
   return isDirect ? {
     path,
+    name: path,
     redirect: target
-  } : same ? Object.assign({
+  } : Object.assign({
     path,
+    name: path,
     meta: {keepAlive}
-  }, pageLoader(target)) : Object.assign({meta: {keepAlive}}, pageLoader(target), path)
+  }, pageLoader(target))
 }
 /**
  * 默认的路由解析起
@@ -165,7 +167,7 @@ const addRoute = (route, parent) => {
       if(parent === defaultParent && !hasDefaultParent){
         getRouter().addRoute(r)
       } else {
-        getRouter().addRoute(r, parent)
+        getRouter().addRoute(parent, r)
       }
     } else {
       if (parent) {
