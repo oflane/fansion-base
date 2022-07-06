@@ -113,6 +113,7 @@ let parserRules = [
       }
       if (!path.redirect) {
         if (!path.component) {
+          path.path = res.path
           path.component = res.component
           if (res.props) {
             path.props ? Object.assign(path.props, res.props) : path.props = res.props
