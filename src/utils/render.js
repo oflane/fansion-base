@@ -3,7 +3,7 @@
  */
 
 import Vue from 'vue'
-import {repeat} from './util'
+import {repeat, isFunction} from './util'
 
 /**
  * 模板串转换成vuecomponent的render方法
@@ -221,4 +221,44 @@ function generateComponentTrace (vm) {
   return '\n\nfound in\n\n' + tree.map(function (vm, i) {
     return '' + (i === 0 ? '---> ' : repeat(' ', 5 + i * 2)) + (Array.isArray(vm) ? ((formatComponentName(vm[0])) + '... (" + (vm[1]) + " recursive calls)') : formatComponentName(vm))
   }).join('\n')
+}
+
+/**
+ * 通过方法配置构建方法
+ * @param methods 方法配置对象
+ * @returns {object} 方法对象
+ */
+export function evalMethods(methods) {
+  if (typeof methods !== 'object') {
+    return {}
+  }
+  const result = {}
+  Object.entries(methods).forEach(([k, v]) => {
+    if (k === 'compType') {
+      return
+    }
+    if (isFunction(v)) {
+      result[k] = v
+    } else if (typeof v === 'object') {
+      if(v.body) {
+        const a = v.args ? (Array.isArray(v.args) ? v.args : [v.args]) : []
+        try {
+          v = new Function(...a, v.body)
+        } catch (e) {}
+        v && (result[k] = v)
+      }
+    } else if (typeof v === 'string') {
+      if (v.indexOf("function(") >= 0) {
+        try {
+          v = eval(v)
+        } catch (e) {}
+      } else {
+        try {
+          v = new Function(v)
+        } catch (e) {}
+      }
+      v && (result[k] = v)
+    }
+  })
+  return result
 }
